@@ -1,0 +1,426 @@
+﻿
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lô Tô Online</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Segoe UI,Arial,sans-serif;
+      color:#fff4da;
+      background:
+        radial-gradient(1200px 480px at 50% -10%, rgba(255,225,160,.20), transparent 60%),
+        linear-gradient(180deg,#b31217 0%, #8f1014 45%, #6f0c10 100%);
+      position:relative;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.18;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(255,210,120,.75) 0 2px, transparent 2.5px) 0 0/56px 56px,
+        radial-gradient(circle at 82% 35%, rgba(255,210,120,.7) 0 2px, transparent 2.5px) 0 0/64px 64px,
+        radial-gradient(circle at 50% 75%, rgba(255,210,120,.6) 0 1.6px, transparent 2px) 0 0/48px 48px;
+      z-index:0;
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(18px 18px at 20px 20px, rgba(255,188,86,.28), transparent 68%),
+        radial-gradient(18px 18px at 20px 20px, rgba(255,188,86,.22), transparent 68%);
+      background-size:120px 120px, 120px 120px;
+      background-position:0 0, 60px 60px;
+      opacity:.22;
+      mix-blend-mode:screen;
+      z-index:0;
+    }
+    .w{max-width:1080px;margin:auto;padding:16px;position:relative;z-index:1}
+    .c{
+      background:linear-gradient(180deg,rgba(255,255,255,.20),rgba(255,255,255,.12));
+      border:1px solid rgba(255,235,190,.28);
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 14px 28px rgba(60,8,10,.35);
+    }
+    .r{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.s{display:none}.s.a{display:block}
+    .b{padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.15);color:#fff4da;font-weight:800;cursor:pointer}
+    .b:disabled{opacity:.55;cursor:not-allowed}.p{background:linear-gradient(135deg,#ffd36a,#ffb84d);color:#3a210f}
+    .f{display:flex;flex-direction:column;gap:6px;min-width:210px}input,select{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.18);color:#fff4da}
+    .g{display:grid;grid-template-columns:repeat(9,40px);gap:6px;justify-content:center}.x{width:40px;height:36px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center}
+    .x input{width:100%;height:100%;border:0;background:transparent;color:#fff4da;text-align:center;font-weight:800}.h{outline:2px solid #22c55e;background:rgba(34,197,94,.2)}
+    .bd{padding:5px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.15)} .ctr{text-align:center}
+    .t{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);padding:10px 12px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.24);border-radius:10px;opacity:0;transition:.2s;max-width:90%;z-index:9999}.t.sh{opacity:1}
+    .err{display:none;margin:8px 0;padding:10px 12px;border-radius:10px;border:1px solid rgba(239,68,68,.8);background:rgba(127,29,29,.5);color:#fecaca;font-weight:700}.err.show{display:block}
+    .lantern{
+      position:fixed;
+      top:0;
+      width:78px;
+      height:104px;
+      border-radius:42px;
+      background:
+        radial-gradient(120% 80% at 50% 10%, rgba(255,236,186,.55), transparent 42%),
+        linear-gradient(180deg,#ffcf6b 0 9%, #d41620 9% 91%, #9f0f16 91% 100%);
+      border:2px solid rgba(255,210,120,.75);
+      box-shadow:
+        0 12px 24px rgba(0,0,0,.32),
+        inset 0 -8px 16px rgba(0,0,0,.18);
+      z-index:2;
+      transform-origin:50% -18px;
+      animation:sway 3.4s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .lantern::before{
+      content:"";
+      position:absolute;
+      top:-46px;
+      left:50%;
+      width:3px;
+      height:46px;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg,#f7dd9e,#c7972e);
+      border-radius:2px;
+    }
+    .lantern::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:-30px;
+      width:4px;
+      height:30px;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg,#ffd36a,#c99225);
+      box-shadow:
+        -7px 6px 0 0 #c99225,
+        7px 6px 0 0 #c99225;
+      border-radius:2px;
+    }
+    .lantern.left{left:26px;animation-delay:.1s}
+    .lantern.right{right:26px;animation-delay:.6s}
+    @keyframes sway{
+      0%{transform:rotate(4deg)}
+      50%{transform:rotate(-4deg)}
+      100%{transform:rotate(4deg)}
+    }
+    .lion{
+      position:fixed;
+      left:-220px;
+      bottom:28px;
+      z-index:3;
+      font-size:54px;
+      filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));
+      pointer-events:none;
+      animation:lionRun 14s linear infinite;
+      white-space:nowrap;
+    }
+    @keyframes lionRun{
+      0%{transform:translateX(0)}
+      100%{transform:translateX(calc(100vw + 320px))}
+    }
+    .title-splash{
+      position:fixed;
+      left:24px;
+      top:22px;
+      z-index:6;
+      pointer-events:none;
+      font-size:62px;
+      font-weight:1000;
+      letter-spacing:2px;
+      color:#ffe08a;
+      text-shadow:
+        0 0 10px rgba(255,219,124,.75),
+        0 0 24px rgba(255,174,64,.55),
+        0 8px 20px rgba(0,0,0,.35);
+      animation:titleFly 4.8s ease-in-out forwards;
+    }
+    .title-splash::after{
+      content:"✦ ✧ ✦";
+      position:absolute;
+      right:-62px;
+      top:-14px;
+      font-size:22px;
+      color:#ffd36a;
+      opacity:.9;
+      animation:sparkle 1.1s ease-in-out infinite alternate;
+    }
+    @keyframes titleFly{
+      0%{transform:translate(0,0) scale(.72) rotate(-2deg);opacity:.35}
+      35%{transform:translate(24vw,16vh) scale(1.05) rotate(0deg);opacity:1}
+      62%{transform:translate(33vw,28vh) scale(1.16);opacity:1}
+      100%{transform:translate(36vw,31vh) scale(1.1);opacity:.08}
+    }
+    @keyframes sparkle{
+      0%{transform:translateY(0) scale(.9);opacity:.5}
+      100%{transform:translateY(-4px) scale(1.08);opacity:1}
+    }
+  </style>
+</head>
+<body>
+  <div class="title-splash" aria-hidden="true">LÔ TÔ ONLINE</div>
+  <div class="lantern left" aria-hidden="true"></div>
+  <div class="lantern right" aria-hidden="true"></div>
+  <div class="lion" aria-hidden="true">🦁🥁🧧</div>
+  <div class="w">
+    <div id="bootError" class="err"></div>
+    <div class="r" style="justify-content:space-between;margin-bottom:10px">
+      <div><h1 style="margin:0;color:#ffd36a">LÔ TÔ ONLINE</h1><div>Phòng 4-10 người • Nhảy số 10 giây/lần</div></div>
+      <div class="c r">
+        <span class="bd">Room: <b id="uiRoom">—</b></span>
+        <span class="bd">Bạn: <b id="uiMe">—</b></span>
+        <button id="btnMusic" class="b">🔇 Tắt nhạc</button>
+        <button id="btnLeave" class="b" style="display:none">Thoát</button>
+      </div>
+    </div>
+
+    <section id="HOME" class="s a"><div class="c ctr"><h2>Bắt đầu</h2><button id="btnStart" class="b p">Bắt đầu</button></div></section>
+    <section id="MENU" class="s"><div class="c ctr"><h2>Chọn chế độ</h2><div class="r" style="justify-content:center"><button id="btnGoCreate" class="b p">Tạo phòng</button><button id="btnGoJoin" class="b">Tham gia</button><button id="btnBackHome" class="b">⬅ Về</button></div></div></section>
+
+    <section id="CREATE" class="s"><div class="c"><h2>Tạo phòng</h2><div class="r"><div class="f"><label>Tên</label><input id="createName" /></div><div class="f"><label>Player ID</label><input id="createPid" /></div><div class="f"><label>Số người</label><select id="createMax"><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>10</option></select></div></div><div class="r" style="margin-top:10px"><button id="btnCreateRoom" class="b p">Tạo & vào phòng chờ</button><button id="btnBackMenu1" class="b">⬅ Quay lại</button></div></div></section>
+    <section id="JOIN" class="s"><div class="c"><h2>Tham gia phòng</h2><div class="r"><div class="f"><label>Tên</label><input id="joinName" /></div><div class="f"><label>Player ID</label><input id="joinPid" /></div><div class="f"><label>Room ID</label><input id="joinRoom" /></div></div><div class="r" style="margin-top:10px"><button id="btnJoinRoom" class="b p">Bắt đầu</button><button id="btnBackMenu2" class="b">⬅ Quay lại</button></div></div></section>
+
+    <section id="LOBBY" class="s"><div class="c"><div class="ctr"><h2>Phòng chờ</h2><div class="bd" style="display:inline-block;font-size:28px;color:#ffd36a"><b id="roomBig">RXXXXX</b></div><div style="margin-top:8px"><span class="bd">Tối đa: <b id="maxPlayers">—</b></span> <span class="bd">Hiện có: <b id="curPlayers">—</b></span> <span class="bd">Host: <b id="hostTag">—</b></span></div></div><div class="r" style="align-items:flex-start;margin-top:10px"><div style="flex:1;min-width:330px"><h3>Vé của bạn</h3><div class="r"><div class="f"><label>Màu</label><select id="colorSel"></select></div><div class="f"><label>Ticket ID</label><input id="ticketId" /></div><div class="f"><label>&nbsp;</label><button id="btnSaveTicket" class="b p">Lưu vé</button></div></div><div class="c" style="margin-top:8px"><div class="r" style="justify-content:space-between"><span class="bd">PHIẾU</span><span class="bd" id="colorBadge">—</span></div><div id="ticketGrid" class="g"></div><div class="r" style="margin-top:8px"><button id="btnClear" class="b">Xóa số</button><button id="btnReady" class="b">READY</button><span class="bd" id="readyState">Chưa ready</span></div></div></div><div style="flex:1;min-width:300px"><h3>Người chơi</h3><div id="playersBox" class="c" style="min-height:160px"></div><div class="r" style="margin-top:8px"><button id="btnHostStart" class="b p" disabled>Bắt đầu (Host)</button></div></div></div></div></section>
+
+    <section id="GAME" class="s"><div class="c"><div class="r" style="justify-content:space-between"><h2 style="margin:0">Đang chơi</h2><div><span class="bd">Đã quay: <b id="drawnCount">0</b></span> <span class="bd">Còn lại: <b id="remainCount">90</b></span></div></div><div class="ctr" style="margin:10px 0"><span class="bd" style="font-size:30px;color:#ffd36a" id="lastBall">—</span></div><div class="r" style="align-items:flex-start"><div style="flex:1;min-width:330px"><h3>Phiếu của bạn</h3><div class="c"><div class="r" style="justify-content:space-between"><span class="bd" id="myTicketTag">—</span><span class="bd" id="myColorTag">—</span></div><div id="myGrid" class="g"></div><div class="r" style="margin-top:8px"><button id="btnClaim" class="b" style="display:none">Tôi thắng!</button></div></div></div><div style="flex:1;min-width:300px"><h3>Thông báo</h3><div id="noticeBox" class="c">Chờ số mới…</div></div></div></div></section>
+
+    <section id="RESULT" class="s"><div class="c ctr"><h2>🎉 Có người thắng!</h2><div class="bd" style="display:inline-block;font-size:28px;color:#ffd36a"><b id="winnerName">—</b></div><p>Hàng thắng: <b id="winnerRow">—</b></p><div class="r" style="justify-content:center"><button id="btnExitEnd" class="b">Thoát</button><button id="btnPlayAgain" class="b">Chơi tiếp</button></div></div></section>
+  </div>
+  <div id="toast" class="t"></div>
+  <div id="musicHost" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, onSnapshot, deleteDoc, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    window.__lotoModuleLoaded = true;
+
+    const firebaseConfig = { apiKey:"AIzaSyDCQz7MVIRtdvg5xuthEriAlPH--vvlxAk", authDomain:"loto-online-8cd6a.firebaseapp.com", projectId:"loto-online-8cd6a", storageBucket:"loto-online-8cd6a.firebasestorage.app", messagingSenderId:"728336313367", appId:"1:728336313367:web:e35d96f2c5cd3daacd0052", measurementId:"G-DR635NWYE3" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const DRAW_MS = 10000;
+    const COLORS = ["Đỏ","Vàng","Tím đậm","Nâu","Xanh lá","Xanh dương","Hồng","Đen","Cam","Trắng ngà","Cầu vồng"];
+    const $ = (id) => document.getElementById(id);
+    const SC = ["HOME","MENU","CREATE","JOIN","LOBBY","GAME","RESULT"];
+    const st = { roomId:null, playerId:null, name:null, isHost:false, maxPlayers:10, hostId:null, color:"Tím đậm", ticketId:"", grid:eg(), ready:false, drawn:[], roomUnsub:null, playersUnsub:null, claimsUnsub:null, drawTimer:null, localMode:false };
+
+    const sh = (id) => { SC.forEach((s) => $(s).classList.remove("a")); $(id).classList.add("a"); };
+    let tt = null;
+    const toast = (m) => { const e = $("toast"); e.textContent = m; e.classList.add("sh"); clearTimeout(tt); tt = setTimeout(() => e.classList.remove("sh"), 2600); };
+    const ebox = (m) => { const el = $("bootError"); el.textContent = m; el.classList.add("show"); };
+    const emsg = (e) => { const c = e?.code || ""; if (c.includes("permission-denied")) return "Firebase chặn quyền (Firestore Rules)."; if (c.includes("unavailable")) return "Mất kết nối Firebase."; if (c.includes("network-request-failed")) return "Lỗi mạng khi gọi Firebase."; if (c.includes("operation-not-allowed")) return "Auth anonymous chưa bật trong Firebase."; if (c.includes("auth/configuration-not-found")) return "Firebase Auth chưa cấu hình cho project này."; return e?.message || "Lỗi không xác định."; };
+    const fail = (p, e) => { console.error(p, e); const m = p + " " + emsg(e); toast(m); ebox(m); };
+    const withTimeout = (promise, ms = 10000) => Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error("Quá thời gian chờ Firebase.")), ms))]);
+    const bind = (id, fn, msg) => { $(id).onclick = async () => { const b = $(id); if (b.disabled) return; b.disabled = true; try { await fn(); } catch (e) { fail(msg, e); } finally { b.disabled = false; } }; };
+    const MUSIC_VIDEO_ID = "Jen82pHTyik";
+    let musicOn = false; // audible state
+    let musicStarted = false; // iframe exists
+    let musicFrame = null;
+
+    function musicSrc(muted = true){
+      const origin = location.origin;
+      const m = muted ? 1 : 0;
+      return `https://www.youtube.com/embed/${MUSIC_VIDEO_ID}?autoplay=1&loop=1&playlist=${MUSIC_VIDEO_ID}&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&mute=${m}&origin=${origin}`;
+    }
+    function ytCmd(command, args = []){
+      if(!musicFrame || !musicFrame.contentWindow) return;
+      musicFrame.contentWindow.postMessage(JSON.stringify({
+        event: "command",
+        func: command,
+        args
+      }), "*");
+    }
+    function forcePlayYoutube(){
+      ytCmd("playVideo");
+      ytCmd("unMute");
+      ytCmd("setVolume", [100]);
+    }
+    function ensureMusicFrame(muted = true){
+      if(musicFrame) return;
+      const iframe = document.createElement("iframe");
+      iframe.width = "1";
+      iframe.height = "1";
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.src = musicSrc(muted);
+      iframe.title = "Music player";
+      iframe.style.border = "0";
+      iframe.addEventListener("load", () => setTimeout(() => ytCmd("playVideo"), 250));
+      $("musicHost").appendChild(iframe);
+      musicFrame = iframe;
+      musicStarted = true;
+    }
+    function startMusic(showToast = true){
+      ensureMusicFrame(true);
+      forcePlayYoutube();
+      setTimeout(forcePlayYoutube, 300);
+      setTimeout(forcePlayYoutube, 900);
+      musicOn = true;
+      $("btnMusic").textContent = "🔇 Tắt nhạc";
+      if(showToast) toast("Đang phát nhạc.");
+    }
+    function stopMusic(showToast = true){
+      if(musicFrame){
+        musicFrame.remove();
+        musicFrame = null;
+      }
+      musicStarted = false;
+      musicOn = false;
+      $("btnMusic").textContent = "🎵 Bật nhạc";
+      if(showToast) toast("Đã tắt nhạc.");
+    }
+    function toggleMusic(){
+      if(musicOn) stopMusic();
+      else startMusic();
+    }
+    function primeMusicByGesture(){
+      if(!musicOn) startMusic(false);
+    }
+
+    let authOptionalMode = false;
+    const authReady = signInAnonymously(auth).catch((e) => {
+      const code = e?.code || "";
+      if (code.includes("auth/configuration-not-found") || code.includes("operation-not-allowed")) {
+        authOptionalMode = true;
+        toast("Firebase Auth chưa bật, chạy chế độ không đăng nhập.");
+        return null;
+      }
+      fail("Đăng nhập ẩn danh thất bại.", e);
+      throw e;
+    });
+
+    function eg(){ return Array.from({length:9}, () => Array.from({length:9}, () => null)); }
+    function vg(g){ const s = new Set(); for(let r=0;r<9;r++){ let c=0; for(let k=0;k<9;k++){ const v=g[r][k]; if(v==null) continue; if(!Number.isInteger(v)||v<1||v>90) return "Mỗi ô phải trống hoặc số 1..90"; if(s.has(v)) return "Không được trùng số"; s.add(v); c++; } if(c>5) return "Mỗi hàng tối đa 5 số"; } return null; }
+    function win(g,d){ const h=new Set(d||[]); for(let r=0;r<9;r++){ let f=0,m=0; for(let c=0;c<9;c++){ const v=g?.[r]?.[c]; if(v==null) continue; f++; if(h.has(v)) m++; } if(f===5&&m===5) return {ok:true,row:r}; } return {ok:false,row:-1}; }
+    const sl = () => { localStorage.setItem("loto_name", st.name||""); localStorage.setItem("loto_pid", st.playerId||""); };
+    const ll = () => ({ n:localStorage.getItem("loto_name")||"", p:localStorage.getItem("loto_pid")||"" });
+    const LR_KEY = "loto_local_rooms_v1";
+    const loadRooms = () => { try { return JSON.parse(localStorage.getItem(LR_KEY) || "{}"); } catch { return {}; } };
+    const saveRooms = (rooms) => localStorage.setItem(LR_KEY, JSON.stringify(rooms));
+    const isFirebaseTimeout = (e) => {
+      const code = e?.code || "";
+      const msg = String(e?.message || "");
+      return code.includes("unavailable") || code.includes("network-request-failed") || msg.includes("Quá thời gian chờ Firebase");
+    };
+    function renderLocalPlayers(roomId){
+      const rooms = loadRooms();
+      const room = rooms[roomId];
+      const arr = room ? Object.entries(room.players || {}).map(([id, p]) => ({ id, ...p })) : [];
+      $("curPlayers").textContent = String(arr.length);
+      $("playersBox").innerHTML = arr.map(v=>`<div style="padding:8px;border:1px solid rgba(255,255,255,.16);border-radius:10px;margin:6px 0"><b>${v.name||"Ẩn danh"}${v.id===st.playerId?" (Bạn)":""}</b> <span class="bd">${v.id}</span><div>${v.ready?"✅ Ready":"⏳ Chưa ready"}${v.color?" • "+v.color:""}${v.ticketId?" • "+v.ticketId:""}</div></div>`).join("") || "Chưa có ai…";
+      $("btnHostStart").disabled = true;
+    }
+    function attachLocal(roomId){
+      const rooms = loadRooms();
+      const room = rooms[roomId];
+      if(!room){ toast("Room local không tồn tại."); return; }
+      detach();
+      st.localMode = true;
+      st.roomId = roomId;
+      st.maxPlayers = room.maxPlayers;
+      st.hostId = room.hostId;
+      $("uiRoom").textContent = roomId;
+      $("btnLeave").style.display = "inline-block";
+      $("roomBig").textContent = roomId;
+      $("maxPlayers").textContent = String(room.maxPlayers || 0);
+      $("hostTag").textContent = room.hostId || "—";
+      renderLocalPlayers(roomId);
+      sh("LOBBY");
+    }
+
+    function build(){ const w=$("ticketGrid"); w.innerHTML=""; for(let r=0;r<9;r++) for(let c=0;c<9;c++){ const d=document.createElement("div"); d.className="x"; const i=document.createElement("input"); i.inputMode="numeric"; i.maxLength=2; i.oninput=()=>{ const t=i.value.replace(/[^0-9]/g,""); if(!t){ st.grid[r][c]=null; i.value=""; return; } let n=parseInt(t,10); if(n<1)n=1; if(n>90)n=90; st.grid[r][c]=n; i.value=String(n); if(st.grid[r].filter(x=>x!=null).length>5){ st.grid[r][c]=null; i.value=""; toast("Hàng này đã đủ 5 số"); } }; d.appendChild(i); w.appendChild(d); } }
+    function sync(){ const a=$("ticketGrid").querySelectorAll("input"); let i=0; for(let r=0;r<9;r++) for(let c=0;c<9;c++) a[i++].value = st.grid[r][c]==null?"":String(st.grid[r][c]); }
+    function ro(id,g,d){ const w=$(id); w.innerHTML=""; const h=new Set(d||[]); for(let r=0;r<9;r++) for(let c=0;c<9;c++){ const x=document.createElement("div"); x.className="x"; const v=g?.[r]?.[c]??null; x.textContent=v==null?"":String(v); if(v!=null&&h.has(v)) x.classList.add("h"); w.appendChild(x); } }
+
+    function stopHost(){ if(st.drawTimer) clearInterval(st.drawTimer); st.drawTimer=null; if(st.claimsUnsub) st.claimsUnsub(); st.claimsUnsub=null; }
+    function detach(){ if(st.roomUnsub) st.roomUnsub(); if(st.playersUnsub) st.playersUnsub(); if(st.claimsUnsub) st.claimsUnsub(); st.roomUnsub=st.playersUnsub=st.claimsUnsub=null; stopHost(); }
+
+    function attach(roomId){
+      detach(); st.roomId=roomId; $("uiRoom").textContent=roomId; $("btnLeave").style.display="inline-block";
+      const rr=doc(db,"rooms",roomId);
+      st.roomUnsub=onSnapshot(rr, (s)=>{ if(!s.exists()){ toast("Phòng không tồn tại/đã xóa"); leave(true); return; } const r=s.data(); st.hostId=r.hostId; st.maxPlayers=r.maxPlayers; st.drawn=r.drawn||[]; $("roomBig").textContent=roomId; $("maxPlayers").textContent=String(r.maxPlayers||0); $("hostTag").textContent=r.hostId||"—"; $("drawnCount").textContent=String(st.drawn.length); $("remainCount").textContent=String((r.remaining||[]).length); $("lastBall").textContent=st.drawn.length?String(st.drawn.at(-1)):"—"; if(r.status==="waiting") sh("LOBBY"); if(r.status==="playing"){ sh("GAME"); $("myTicketTag").textContent=st.ticketId||"Ticket"; $("myColorTag").textContent=st.color; ro("myGrid",st.grid,st.drawn); $("btnClaim").style.display=win(st.grid,st.drawn).ok?"inline-block":"none"; } if(r.status==="ended"&&r.winner){ $("winnerName").textContent=r.winner.name||"—"; $("winnerRow").textContent=String((r.winner.row??0)+1); sh("RESULT"); stopHost(); } if(st.isHost&&r.status==="playing"){ draw(rr); claimWatch(roomId); } else stopHost(); }, (e)=>fail("Không theo dõi được phòng.", e));
+      st.playersUnsub=onSnapshot(collection(db,"rooms",roomId,"players"), (q)=>{ const p=[]; q.forEach(d=>p.push({id:d.id,...d.data()})); $("curPlayers").textContent=String(p.length); $("playersBox").innerHTML=p.map(v=>`<div style="padding:8px;border:1px solid rgba(255,255,255,.16);border-radius:10px;margin:6px 0"><b>${v.name||"Ẩn danh"}${v.id===st.playerId?" (Bạn)":""}</b> <span class="bd">${v.id}</span><div>${v.ready?"✅ Ready":"⏳ Chưa ready"}${v.color?" • "+v.color:""}${v.ticketId?" • "+v.ticketId:""}</div></div>`).join("")||"Chưa có ai…"; $("btnHostStart").disabled=!(st.isHost&&p.length>=2&&p.every(v=>v.ready&&v.ticketId&&v.grid)); $("uiMe").textContent=st.name?`${st.name} (${st.playerId})`:"—"; const me=p.find(v=>v.id===st.playerId); if(me){ st.ticketId=me.ticketId||st.ticketId; st.color=me.color||st.color; st.grid=me.grid||st.grid; st.ready=!!me.ready; $("ticketId").value=st.ticketId; $("readyState").textContent=st.ready?"✅ Ready":"Chưa ready"; $("colorSel").value=st.color; $("colorBadge").textContent=st.color; } }, (e)=>fail("Không tải được người chơi.", e));
+    }
+
+    function draw(rr){ if(st.drawTimer) return; st.drawTimer=setInterval(async()=>{ const s=await withTimeout(getDoc(rr),8000); if(!s.exists()) return; const r=s.data(); if(r.status!=="playing") return; const rem=r.remaining||[],dr=r.drawn||[]; if(!rem.length) return; const i=Math.floor(Math.random()*rem.length),n=rem[i]; rem.splice(i,1); dr.push(n); await withTimeout(updateDoc(rr,{remaining:rem,drawn:dr}),8000); $("noticeBox").textContent="Số mới: "+n; }, DRAW_MS); }
+    function claimWatch(roomId){ if(st.claimsUnsub) return; const rr=doc(db,"rooms",roomId); st.claimsUnsub=onSnapshot(query(collection(db,"rooms",roomId,"claims"),orderBy("createdAt","asc"),limit(30)), async (q)=>{ const rs=await withTimeout(getDoc(rr),8000); if(!rs.exists()) return; const room=rs.data(); if(room.status!=="playing"||room.winner) return; for(const d of q.docs){ const pid=d.data().playerId, ps=await withTimeout(getDoc(doc(db,"rooms",roomId,"players",pid)),8000); if(!ps.exists()){ await withTimeout(deleteDoc(d.ref),8000); continue; } const p=ps.data(),r=win(p.grid,room.drawn||[]); if(r.ok){ await withTimeout(updateDoc(rr,{status:"ended",winner:{playerId:pid,name:p.name,row:r.row,atNumber:(room.drawn||[]).at(-1)||null}}),8000); const all=await withTimeout(getDocs(collection(db,"rooms",roomId,"claims")),8000); for(const c of all.docs) await withTimeout(deleteDoc(c.ref),8000); return; } await withTimeout(deleteDoc(d.ref),8000); } }); }
+
+    async function create(){ await withTimeout(authReady,8000); const n=$("createName").value.trim(),pid=$("createPid").value.trim(),m=parseInt($("createMax").value,10); if(!n||!pid){ toast("Nhập Tên và Player ID"); return; } if(!(m>=4&&m<=10)){ toast("Số người phải 4-10"); return; } st.name=n; st.playerId=pid; st.isHost=true; sl(); st.localMode = false; $("uiMe").textContent=`${n} (${pid})`; const roomId="R"+Math.random().toString(36).slice(2,7).toUpperCase(), rr=doc(db,"rooms",roomId); try{ await withTimeout(setDoc(rr,{status:"waiting",maxPlayers:m,hostId:pid,drawn:[],remaining:Array.from({length:90},(_,i)=>i+1),winner:null,countdownStart:null,createdAt:serverTimestamp()}),8000); await withTimeout(setDoc(doc(db,"rooms",roomId,"players",pid),{name:n,ready:false,color:st.color,ticketId:"",grid:null,joinedAt:serverTimestamp()}),8000); if(authOptionalMode) toast("Auth chưa cấu hình, đang chạy không đăng nhập."); attach(roomId); sh("LOBBY"); toast("Đã tạo phòng: "+roomId); } catch(e){ if(!isFirebaseTimeout(e)) throw e; const rooms = loadRooms(); rooms[roomId] = { status:"waiting", maxPlayers:m, hostId:pid, players:{ [pid]:{ name:n, ready:false, color:st.color, ticketId:"", grid:null } } }; saveRooms(rooms); attachLocal(roomId); toast("Firebase timeout. Đã tạo phòng LOCAL: "+roomId); } }
+    async function join(){ await withTimeout(authReady,8000); const n=$("joinName").value.trim(),pid=$("joinPid").value.trim(),roomId=$("joinRoom").value.trim().toUpperCase(); if(!n||!pid||!roomId){ toast("Nhập đủ Tên, Player ID, Room ID"); return; } st.name=n; st.playerId=pid; st.isHost=false; sl(); st.localMode=false; $("uiMe").textContent=`${n} (${pid})`; try{ const rr=doc(db,"rooms",roomId),s=await withTimeout(getDoc(rr),8000); if(!s.exists()){ toast("Phòng không tồn tại"); return; } const room=s.data(); if(room.status!=="waiting"){ toast("Phòng không còn mở"); return; } const ps=await withTimeout(getDocs(collection(db,"rooms",roomId,"players")),8000); if(ps.size>=room.maxPlayers){ toast("Phòng đã đủ người"); return; } if((await withTimeout(getDoc(doc(db,"rooms",roomId,"players",pid)),8000)).exists()){ toast("Player ID đã tồn tại"); return; } await withTimeout(setDoc(doc(db,"rooms",roomId,"players",pid),{name:n,ready:false,color:st.color,ticketId:"",grid:null,joinedAt:serverTimestamp()}),8000); if(authOptionalMode) toast("Auth chưa cấu hình, đang chạy không đăng nhập."); attach(roomId); sh("LOBBY"); toast("Đã tham gia phòng: "+roomId); } catch(e){ if(!isFirebaseTimeout(e)) throw e; const rooms = loadRooms(); const room = rooms[roomId]; if(!room){ toast("Room local không tồn tại."); return; } const count = Object.keys(room.players || {}).length; if(count >= room.maxPlayers){ toast("Phòng local đã đủ người."); return; } if(room.players[pid]){ toast("Player ID đã tồn tại."); return; } room.players[pid] = { name:n, ready:false, color:st.color, ticketId:"", grid:null }; saveRooms(rooms); attachLocal(roomId); toast("Firebase timeout. Đã vào phòng LOCAL: "+roomId); } }
+    async function leave(silent=false){ stopHost(); const roomId=st.roomId,pid=st.playerId; if(st.localMode && roomId && pid){ const rooms=loadRooms(); const room=rooms[roomId]; if(room){ delete room.players[pid]; if(st.isHost || Object.keys(room.players).length===0) delete rooms[roomId]; saveRooms(rooms); } } else if(roomId&&pid){ const rr=doc(db,"rooms",roomId),s=await withTimeout(getDoc(rr),8000); if(s.exists()){ const room=s.data(); await withTimeout(deleteDoc(doc(db,"rooms",roomId,"players",pid)),8000); if(st.isHost&&room.hostId===pid){ const ps=await withTimeout(getDocs(collection(db,"rooms",roomId,"players")),8000); for(const d of ps.docs) await withTimeout(deleteDoc(d.ref),8000); const cs=await withTimeout(getDocs(collection(db,"rooms",roomId,"claims")),8000); for(const d of cs.docs) await withTimeout(deleteDoc(d.ref),8000); await withTimeout(deleteDoc(rr),8000); } } } detach(); st.roomId=null; st.isHost=false; st.ready=false; st.localMode=false; st.ticketId=""; st.grid=eg(); $("ticketId").value=""; sync(); $("btnLeave").style.display="none"; $("uiRoom").textContent="—"; if(!silent) toast("Đã thoát"); sh("MENU"); }
+    async function saveTicket(){ if(!st.roomId){ toast("Chưa vào phòng"); return; } const tid=$("ticketId").value.trim(),col=$("colorSel").value; if(!tid){ toast("Nhập Ticket ID"); return; } const e=vg(st.grid); if(e){ toast(e); return; } st.ticketId=tid; st.color=col; st.ready=false; if(st.localMode){ const rooms=loadRooms(); const room=rooms[st.roomId]; if(room&&room.players[st.playerId]){ room.players[st.playerId].color=col; room.players[st.playerId].ticketId=tid; room.players[st.playerId].grid=st.grid; room.players[st.playerId].ready=false; saveRooms(rooms); renderLocalPlayers(st.roomId); } } else { await withTimeout(updateDoc(doc(db,"rooms",st.roomId,"players",st.playerId),{color:col,ticketId:tid,grid:st.grid,ready:false}),8000); } $("readyState").textContent="Chưa ready"; $("colorBadge").textContent=col; toast("Đã lưu vé"); }
+    async function ready(){ if(!st.roomId){ toast("Chưa vào phòng"); return; } if(!st.ticketId){ toast("Cần lưu vé trước"); return; } st.ready=!st.ready; if(st.localMode){ const rooms=loadRooms(); const room=rooms[st.roomId]; if(room&&room.players[st.playerId]){ room.players[st.playerId].ready=st.ready; saveRooms(rooms); renderLocalPlayers(st.roomId); } } else { await withTimeout(updateDoc(doc(db,"rooms",st.roomId,"players",st.playerId),{ready:st.ready}),8000); } $("readyState").textContent=st.ready?"✅ Ready":"Chưa ready"; }
+    async function hostStart(){ if(!st.isHost){ toast("Chỉ host mới bắt đầu được"); return; } if(st.localMode){ toast("LOCAL mode: chưa hỗ trợ bắt đầu game multiplayer."); return; } const rr=doc(db,"rooms",st.roomId),s=await withTimeout(getDoc(rr),8000); if(!s.exists()) return; const room=s.data(); if(room.status!=="waiting") return; await withTimeout(updateDoc(rr,{status:"playing"}),8000); toast("Bắt đầu game"); }
+    async function claim(){ if(!st.roomId) return; const s=await withTimeout(getDoc(doc(db,"rooms",st.roomId)),8000); if(!s.exists()) return; const room=s.data(); if(room.status!=="playing") return; if(!win(st.grid,room.drawn||[]).ok){ toast("Bạn chưa đủ điều kiện thắng"); return; } await withTimeout(addDoc(collection(db,"rooms",st.roomId,"claims"),{playerId:st.playerId,name:st.name,createdAt:serverTimestamp()}),8000); $("btnClaim").style.display="none"; toast("Đã gửi claim"); }
+    async function again(){ if(!st.isHost){ toast("Chỉ host mới chơi tiếp được"); return; } const rr=doc(db,"rooms",st.roomId); await withTimeout(updateDoc(rr,{status:"waiting",drawn:[],remaining:Array.from({length:90},(_,i)=>i+1),winner:null,countdownStart:null}),8000); const cs=await withTimeout(getDocs(collection(db,"rooms",st.roomId,"claims")),8000); for(const d of cs.docs) await withTimeout(deleteDoc(d.ref),8000); const ps=await withTimeout(getDocs(collection(db,"rooms",st.roomId,"players")),8000); for(const d of ps.docs) await withTimeout(updateDoc(d.ref,{ready:false}),8000); toast("Đã reset ván"); }
+
+    window.addEventListener("unhandledrejection",(e)=>fail("Lỗi async.",e.reason));
+    window.addEventListener("error",(e)=>{ if(e?.message) ebox("Lỗi JS: "+e.message); });
+
+    build(); ro("myGrid",st.grid,[]); COLORS.forEach((c)=>{ const o=document.createElement("option"); o.value=o.textContent=c; $("colorSel").appendChild(o); }); $("colorSel").value=st.color; $("colorBadge").textContent=st.color;
+    // Try autoplay in muted context first, then switch to audible on first user gesture.
+    ensureMusicFrame(true);
+    $("btnMusic").textContent = "🎵 Bật nhạc";
+    window.addEventListener("pointerdown", primeMusicByGesture, { once: true });
+    window.addEventListener("keydown", primeMusicByGesture, { once: true });
+    const sv=ll(); $("createName").value=sv.n; $("joinName").value=sv.n; $("createPid").value=sv.p; $("joinPid").value=sv.p;
+    $("btnStart").onclick=()=>sh("MENU"); $("btnBackHome").onclick=()=>sh("HOME"); $("btnGoCreate").onclick=()=>sh("CREATE"); $("btnGoJoin").onclick=()=>sh("JOIN"); $("btnBackMenu1").onclick=()=>sh("MENU"); $("btnBackMenu2").onclick=()=>sh("MENU");
+    $("btnMusic").onclick=toggleMusic;
+    $("btnClear").onclick=()=>{ st.grid=eg(); sync(); toast("Đã xóa số"); }; $("colorSel").onchange=()=>{ st.color=$("colorSel").value; $("colorBadge").textContent=st.color; };
+    bind("btnCreateRoom",create,"Tạo phòng thất bại."); bind("btnJoinRoom",join,"Tham gia phòng thất bại."); bind("btnLeave",()=>leave(),"Thoát phòng thất bại."); bind("btnSaveTicket",saveTicket,"Lưu vé thất bại."); bind("btnReady",ready,"Ready thất bại."); bind("btnHostStart",hostStart,"Bắt đầu game thất bại."); bind("btnClaim",claim,"Claim thất bại."); bind("btnExitEnd",()=>leave(),"Thoát phòng thất bại."); bind("btnPlayAgain",again,"Chơi tiếp thất bại.");
+  </script>
+  <script>
+    setTimeout(function(){
+      if(!window.__lotoModuleLoaded){
+        var el=document.getElementById("bootError");
+        if(el){ el.textContent="Không tải được module Firebase. Kiểm tra mạng hoặc chặn CDN gstatic."; el.classList.add("show"); }
+      }
+    },1800);
+  </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

@@ -1,0 +1,1454 @@
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TetNews — Chuyên mục Tết</title>
+  <style>
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#c81d2b;
+      --brand2:#9b111e;
+      --gold:#f6c453;
+      --gold2:#ffb300;
+      --shadow: 0 8px 22px rgba(17,24,39,.08);
+      --radius:14px;
+      --radius2:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      /* nền Tết: đỏ nhạt + ánh vàng */
+      background:
+        radial-gradient(circle at 18% 12%, rgba(246,196,83,.28), transparent 42%),
+        radial-gradient(circle at 85% 8%, rgba(200,29,43,.14), transparent 38%),
+        radial-gradient(circle at 70% 92%, rgba(246,196,83,.16), transparent 45%),
+        linear-gradient(180deg, #fff7f7 0%, #f3f4f6 55%, #f7fafc 100%);
+      overflow-x:hidden;
+    }
+
+    /* ====== TẾT PATTERN + DECOR ====== */
+    .tet-pattern{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:1;
+      opacity:.22;
+      background-image:
+        radial-gradient(circle at 20px 18px, rgba(200,29,43,.32) 2px, transparent 3px),
+        radial-gradient(circle at 70px 60px, rgba(246,196,83,.30) 2px, transparent 3px),
+        radial-gradient(circle at 130px 28px, rgba(200,29,43,.18) 1.5px, transparent 3px);
+      background-size: 160px 120px;
+      filter: blur(.2px);
+    }
+    .tet-ribbon{
+      position:fixed; top:0; left:0; right:0;
+      height:6px;
+      background: linear-gradient(90deg, var(--brand), var(--gold), var(--brand2));
+      z-index:25;
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    /* ======= EXTRA TẾT DECOR (V2) ======= */
+    .tet-ribbon{
+      height:8px;
+      background: linear-gradient(90deg, var(--brand2), var(--gold), var(--brand), var(--gold2), var(--brand2));
+      background-size: 240% 100%;
+      animation: ribbonShine 6s linear infinite;
+    }
+    @keyframes ribbonShine{
+      0%{ background-position: 0% 50%; }
+      100%{ background-position: 240% 50%; }
+    }
+
+    /* Câu đối hai bên (desktop) */
+    .couplet{
+      position:fixed;
+      top:140px;
+      width:64px;
+      height:360px;
+      z-index:4;
+      pointer-events:none;
+      opacity:.95;
+      filter: drop-shadow(0 18px 28px rgba(0,0,0,.14));
+    }
+    .couplet.left{ left:10px; }
+    .couplet.right{ right:10px; transform: scaleX(-1); }
+    .couplet .panel{
+      width:100%; height:100%;
+      border-radius:18px;
+      background:
+        linear-gradient(180deg, rgba(200,29,43,.98), rgba(155,17,30,.98));
+      border:1px solid rgba(246,196,83,.55);
+      position:relative;
+      overflow:hidden;
+    }
+    .couplet .panel::before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%);
+      transform: rotate(18deg);
+      opacity:.55;
+    }
+    .couplet .seal{
+      position:absolute;
+      left:50%; bottom:12px;
+      transform: translateX(-50%);
+      width:34px; height:34px;
+      border-radius:12px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      border:1px solid rgba(0,0,0,.08);
+      display:grid; place-items:center;
+      color:#3b2a00;
+      font-weight:1000;
+      box-shadow: 0 12px 22px rgba(0,0,0,.18);
+    }
+    .couplet .text{
+      position:absolute;
+      inset:14px 10px 58px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 1px 0 rgba(0,0,0,.15);
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    @media (max-width: 1200px){
+      .couplet{ display:none; }
+    }
+
+    /* Nâng vibe topbar + tabs */
+    .topbar{
+      border-bottom: 1px solid rgba(200,29,43,.14);
+      box-shadow: 0 10px 28px rgba(155,17,30,.10);
+    }
+    .topbar::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:-1px;
+      height:3px;
+      background: linear-gradient(90deg, rgba(246,196,83,.2), rgba(246,196,83,.8), rgba(246,196,83,.2));
+      opacity:.9;
+      pointer-events:none;
+    }
+    .tabs{
+      background: linear-gradient(180deg, #fff, #fff5f5);
+    }
+    .tabs::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 12% 40%, rgba(200,29,43,.06), transparent 40%),
+        radial-gradient(circle at 88% 40%, rgba(246,196,83,.10), transparent 42%);
+      pointer-events:none;
+    }
+    .tab{
+      border-radius: 999px;
+      padding:8px 10px;
+      transition: background .15s ease, transform .12s ease, color .15s ease;
+    }
+    .tab:hover{
+      background: rgba(200,29,43,.06);
+    }
+    .tab.active{
+      background: linear-gradient(135deg, rgba(200,29,43,.10), rgba(246,196,83,.12));
+    }
+
+    /* Viền góc Tết cho card */
+    .news-card, .article{
+      position:relative;
+    }
+    .news-card::before, .article::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      border-radius: inherit;
+      border: 1px solid rgba(246,196,83,.28);
+      box-shadow: inset 0 0 0 1px rgba(200,29,43,.05);
+    }
+    .news-card::after, .article::after{
+      content:"";
+      position:absolute;
+      top:0; right:0;
+      width:84px; height:84px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(246,196,83,.55), rgba(246,196,83,0) 60%),
+        radial-gradient(circle at 65% 55%, rgba(200,29,43,.20), rgba(200,29,43,0) 60%);
+      opacity:.35;
+      pointer-events:none;
+    }
+
+    /* Nền tổng thể đậm Tết hơn */
+    body{
+      background:
+        radial-gradient(circle at 16% 10%, rgba(246,196,83,.30), transparent 45%),
+        radial-gradient(circle at 82% 12%, rgba(200,29,43,.16), transparent 42%),
+        radial-gradient(circle at 70% 92%, rgba(246,196,83,.20), transparent 48%),
+        linear-gradient(180deg, #fff1f1 0%, #f7f7fb 48%, #fff7f7 100%);
+    }
+    .lantern{
+      position:fixed;
+      top:76px;
+      width:140px;
+      height:220px;
+      z-index:3;
+      pointer-events:none;
+      opacity:.95;
+      filter: drop-shadow(0 20px 30px rgba(0,0,0,.12));
+    }
+    .lantern.left{ left:-18px; transform: rotate(-6deg); }
+    .lantern.right{ right:-18px; transform: rotate(6deg) scaleX(-1); }
+    .lantern svg{ width:100%; height:100%; display:block; }
+    @media (max-width: 920px){
+      .lantern{ display:none; }
+    }
+
+    /* ======= TOPBAR ======= */
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      height:56px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 12px;
+      max-width: 980px;
+      margin:0 auto;
+      position:relative;
+      z-index:2;
+    }
+    .left{ display:flex; align-items:center; gap:10px; }
+    .icon-btn{
+      width:40px; height:40px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:grid; place-items:center;
+      cursor:pointer;
+      transition:.15s transform ease;
+    }
+    .icon-btn:active{ transform:scale(.97); }
+    .logo{
+      display:flex; align-items:center; gap:8px;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:var(--brand);
+      user-select:none;
+    }
+    .logo-badge{
+      width:28px;height:28px;border-radius:8px;
+      background:linear-gradient(135deg, var(--brand), var(--brand2));
+      display:grid;place-items:center;
+      color:#fff;font-size:16px;
+      box-shadow: 0 8px 16px rgba(200,29,43,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo-badge::after{
+      content:"";
+      position:absolute; inset:-20%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.6), rgba(255,255,255,0) 55%);
+      transform: rotate(12deg);
+      opacity:.55;
+    }
+    .avatar{
+      width:40px;height:40px;border-radius:999px;
+      border:1px solid var(--line);
+      background: radial-gradient(circle at 30% 30%, #fff, #f3f4f6);
+      display:grid; place-items:center;
+      cursor:pointer;
+    }
+    .avatar svg{ opacity:.85 }
+
+    /* ======= TABS ======= */
+    .tabs{
+      max-width: 980px;
+      margin:0 auto;
+      background:#fff;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      position:relative;
+      z-index:2;
+    }
+    .tabs-row{
+      display:flex;
+      gap:18px;
+      padding:10px 12px;
+      min-width:max-content;
+      align-items:center;
+    }
+    .tab{
+      font-weight:800;
+      color:#374151;
+      white-space:nowrap;
+      text-decoration:none;
+      position:relative;
+      padding:6px 2px;
+    }
+    .tab.active{ color:var(--brand); }
+    .tab.active::after{
+      content:"";
+      position:absolute; left:0; right:0; bottom:-10px;
+      height:3px; border-radius:999px;
+      background: linear-gradient(90deg, var(--brand), var(--gold));
+    }
+
+    /* ======= LAYOUT ======= */
+    .wrap{
+      max-width: 980px;
+      margin: 12px auto;
+      padding: 0 12px 24px;
+      position:relative;
+      z-index:10; /* trên hiệu ứng rơi */
+    }
+
+    /* ======= LIST CARD ======= */
+    .news-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .news-item{
+      display:flex;
+      gap:12px;
+      padding:12px;
+      cursor:pointer;
+      transition: background .15s ease, transform .12s ease;
+      align-items:center;
+    }
+    .news-item:hover{ background:#fafafa; }
+    .news-item:active{ transform: scale(.995); }
+    .thumb{
+      width:128px;
+      height:88px;
+      border-radius:12px;
+      overflow:hidden;
+      flex:0 0 auto;
+      border:1px solid var(--line);
+      background:#eee;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+      flex:1;
+    }
+    .title{
+      font-size:18px;
+      line-height:1.2;
+      margin:0;
+      font-weight:900;
+      color:#111827;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .tag{
+      font-weight:900;
+      color:var(--brand);
+      letter-spacing:.6px;
+      font-size:12px;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .tag .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: linear-gradient(135deg, var(--brand), var(--gold));
+      box-shadow: 0 6px 10px rgba(200,29,43,.18);
+      flex:0 0 auto;
+    }
+    .subline{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .divider{ height:1px; background:var(--line); margin:0; }
+    .hint{
+      padding:10px 12px;
+      color:var(--muted);
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background: linear-gradient(180deg, #fff, #fff7f7);
+    }
+    .pill{
+      font-size:12px;
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#111827;
+    }
+
+    /* ======= ARTICLE VIEW ======= */
+    .article{
+      display:none;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .article-header{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(246,196,83,.18), transparent 42%),
+        linear-gradient(180deg, #fff, #fff7f7);
+    }
+    .article-tag{
+      color:var(--brand);
+      font-weight:1000;
+      letter-spacing:.6px;
+      font-size:12px;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .article-tag::before{
+      content:"";
+      width:8px;height:8px;border-radius:999px;
+      background: linear-gradient(135deg, var(--brand), var(--gold));
+      box-shadow: 0 6px 10px rgba(200,29,43,.18);
+    }
+    .article-title{
+      margin:8px 0 0;
+      font-size:24px;
+      line-height:1.15;
+      font-weight:1000;
+    }
+    .article-sub{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .hero{
+      width:100%;
+      height:220px;
+      background:#0b0f19;
+      overflow:hidden;
+      border-bottom:1px solid var(--line);
+      position:relative;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(to top, rgba(0,0,0,.45), rgba(0,0,0,0));
+      pointer-events:none;
+    }
+    .hero img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .article-body{
+      padding:14px;
+      line-height:1.78;
+      color:#111827;
+      font-size:16px;
+    }
+    .article-body h3{ margin:16px 0 8px; font-size:18px; }
+    .article-body ul, .article-body ol{ margin:8px 0 8px 18px; padding:0; }
+    .note{
+      background:#fff7ed;
+      border:1px solid #fed7aa;
+      color:#9a3412;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:14px;
+    }
+    .quote{
+      border-left:4px solid var(--brand);
+      padding:10px 12px;
+      margin:12px 0;
+      background:#fff5f5;
+      border-radius:12px;
+      color:#7f1d1d;
+      font-weight:700;
+    }
+    .kicker{
+      color:#374151;
+      font-weight:800;
+      margin:10px 0 0;
+      font-size:14px;
+    }
+    .muted{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:8px;
+    }
+
+    /* ===== Related ===== */
+    .related{
+      border-top:1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #fff7f7);
+      padding:12px 14px 14px;
+    }
+    .related h3{
+      margin:0 0 10px;
+      font-size:14px;
+      font-weight:1000;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+      color:#7f1d1d;
+      display:flex; align-items:center; gap:8px;
+    }
+    .related h3::before{
+      content:"🧧";
+      font-size:16px;
+    }
+    .related-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .related-item{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      cursor:pointer;
+      transition: background .15s ease, transform .12s ease;
+    }
+    .related-item:hover{ background:#fafafa; }
+    .related-item:active{ transform: scale(.995); }
+    .related-thumb{
+      width:92px; height:64px;
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#eee;
+      flex:0 0 auto;
+    }
+    .related-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .related-meta{ min-width:0; flex:1; display:flex; flex-direction:column; gap:4px; }
+    .related-title{
+      margin:0;
+      font-size:14px;
+      line-height:1.22;
+      font-weight:1000;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .related-sub{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      display:-webkit-box;
+      -webkit-line-clamp:1;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      padding:12px 14px;
+      border-top:1px solid var(--line);
+      background:#fff;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .btn.primary{
+      border-color: rgba(200,29,43,.25);
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      box-shadow: 0 10px 18px rgba(200,29,43,.18);
+    }
+    .btn:active{ transform: scale(.98); }
+
+    /* ======= DRAWER ======= */
+    .drawer-backdrop{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.35);
+      display:none;
+      z-index:30;
+    }
+    .drawer{
+      position:fixed; top:0; left:0;
+      width:300px; height:100%;
+      background:#fff;
+      border-right:1px solid var(--line);
+      box-shadow: 0 30px 80px rgba(0,0,0,.25);
+      transform: translateX(-102%);
+      transition: transform .2s ease;
+      z-index:31;
+      display:flex;
+      flex-direction:column;
+    }
+    .drawer.open{ transform: translateX(0); }
+    .drawer-head{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      background: linear-gradient(180deg, #fff, #fff7f7);
+    }
+    .drawer-title{
+      font-weight:1000; color:#111827;
+      display:flex; align-items:center; gap:8px;
+    }
+    .drawer-body{ padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+    .drawer-link{
+      padding:12px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      text-decoration:none;
+      color:#111827;
+      font-weight:900;
+      background:#fff;
+    }
+    .drawer-link small{ display:block; color:var(--muted); font-weight:800; margin-top:4px; }
+
+    @media (min-width: 720px){
+      .hero{ height: 340px; }
+      .thumb{ width:160px; height:104px; }
+      .title{ font-size:20px; }
+      .article-title{ font-size:30px; }
+    }
+
+    /* =========================
+       Petals + Glitter FX
+    ========================= */
+    #petals, #glitter{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5; /* dưới nội dung (wrap z-index 10), dưới topbar (20) */
+      overflow: hidden;
+    }
+
+    .petal{
+      position:absolute;
+      top:-12vh;
+      width:12px;
+      height:12px;
+      border-radius: 12px 2px 12px 2px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,215,230,.95), rgba(255,120,170,.75));
+      box-shadow: 0 10px 18px rgba(200,29,43,.12);
+      opacity:.85;
+      filter: saturate(1.1);
+      transform: translate3d(0,0,0) rotate(0deg);
+      animation: petalFall linear infinite;
+    }
+    .petal::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 70% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%);
+      opacity:.85;
+    }
+
+    .glit{
+      position:absolute;
+      top:-12vh;
+      width:3px;
+      height:3px;
+      border-radius:999px;
+      background: rgba(255, 230, 160, .95);
+      box-shadow: 0 0 10px rgba(255, 215, 120, .55);
+      opacity:.9;
+      animation: glitterFall linear infinite, glitterTwinkle ease-in-out infinite;
+    }
+
+    @keyframes petalFall{
+      0%   { transform: translate3d(0,-12vh,0) rotate(0deg); }
+      100% { transform: translate3d(var(--dx), 115vh, 0) rotate(var(--rot)); }
+    }
+    @keyframes glitterFall{
+      0%   { transform: translate3d(0,-12vh,0); }
+      100% { transform: translate3d(var(--dx), 115vh, 0); }
+    }
+    @keyframes glitterTwinkle{
+      0%, 100% { opacity:.25; filter: blur(.2px); }
+      50%      { opacity:1;   filter: blur(0px); }
+    }
+
+    @media (max-width: 520px){
+      .petal{ width:10px; height:10px; opacity:.75; }
+      .glit{ width:2.5px; height:2.5px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Tết decorations -->
+  <div class="tet-ribbon" aria-hidden="true"></div>
+  <div class="tet-pattern" aria-hidden="true"></div>
+
+  <div class="lantern left" aria-hidden="true">
+    <svg viewBox="0 0 200 320" fill="none">
+      <path d="M100 20c0-10 8-18 18-18h18c10 0 18 8 18 18v20H100V20Z" fill="#7f1d1d"/>
+      <path d="M100 40h70v18H100V40Z" fill="#991b1b"/>
+      <path d="M30 140c0-52 40-94 90-94s90 42 90 94-40 120-90 120-90-68-90-120Z" fill="url(#g1)"/>
+      <path d="M50 140c0-44 31-80 70-80s70 36 70 80-31 102-70 102-70-58-70-102Z" fill="rgba(255,255,255,.10)"/>
+      <path d="M78 108h44c18 0 32 14 32 32v36c0 18-14 32-32 32H78c-18 0-32-14-32-32v-36c0-18 14-32 32-32Z" fill="rgba(0,0,0,.10)"/>
+      <path d="M90 122h20" stroke="rgba(255,255,255,.75)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M74 256h52v10c0 8-6 14-14 14H88c-8 0-14-6-14-14v-10Z" fill="#7f1d1d"/>
+      <path d="M100 280v28" stroke="#7f1d1d" stroke-width="8" stroke-linecap="round"/>
+      <path d="M85 310h30" stroke="#7f1d1d" stroke-width="8" stroke-linecap="round"/>
+      <defs>
+        <linearGradient id="g1" x1="30" y1="60" x2="190" y2="260" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#c81d2b"/>
+          <stop offset="1" stop-color="#9b111e"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <div class="lantern right" aria-hidden="true">
+    <svg viewBox="0 0 200 320" fill="none">
+      <path d="M100 20c0-10 8-18 18-18h18c10 0 18 8 18 18v20H100V20Z" fill="#7f1d1d"/>
+      <path d="M100 40h70v18H100V40Z" fill="#991b1b"/>
+      <path d="M30 140c0-52 40-94 90-94s90 42 90 94-40 120-90 120-90-68-90-120Z" fill="url(#g2)"/>
+      <path d="M50 140c0-44 31-80 70-80s70 36 70 80-31 102-70 102-70-58-70-102Z" fill="rgba(255,255,255,.10)"/>
+      <path d="M78 108h44c18 0 32 14 32 32v36c0 18-14 32-32 32H78c-18 0-32-14-32-32v-36c0-18 14-32 32-32Z" fill="rgba(0,0,0,.10)"/>
+      <path d="M90 122h20" stroke="rgba(255,255,255,.75)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M74 256h52v10c0 8-6 14-14 14H88c-8 0-14-6-14-14v-10Z" fill="#7f1d1d"/>
+      <path d="M100 280v28" stroke="#7f1d1d" stroke-width="8" stroke-linecap="round"/>
+      <path d="M85 310h30" stroke="#7f1d1d" stroke-width="8" stroke-linecap="round"/>
+      <defs>
+        <linearGradient id="g2" x1="30" y1="60" x2="190" y2="260" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#c81d2b"/>
+          <stop offset="1" stop-color="#9b111e"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+
+  <!-- Câu đối Tết (desktop) -->
+  <div class="couplet left" aria-hidden="true">
+    <div class="panel">
+      <div class="text">TÂN NIÊN • VẠN SỰ • NHƯ Ý</div>
+      <div class="seal">福</div>
+    </div>
+  </div>
+  <div class="couplet right" aria-hidden="true">
+    <div class="panel">
+      <div class="text">XUÂN ĐẾN • AN KHANG • THỊNH VƯỢNG</div>
+      
+    </div>
+  </div>
+
+  <!-- FX layers -->
+  <div id="petals" aria-hidden="true"></div>
+  <div id="glitter" aria-hidden="true"></div>
+
+  <!-- Drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" aria-label="Menu">
+    <div class="drawer-head">
+      <div class="drawer-title">
+        <span class="logo-badge">📰</span>
+        <span>Chuyên mục Tết</span>
+      </div>
+      <button class="icon-btn" id="closeDrawer" aria-label="Đóng menu">✕</button>
+    </div>
+    <div class="drawer-body">
+      <a class="drawer-link" href="#!" data-go="tab" data-tab="tet-nguyen-dan">
+        Tết Nguyên Đán
+        <small>Giao thừa & ngày Tết</small>
+      </a>
+      <a class="drawer-link" href="#!" data-go="tab" data-tab="ong-cong-ong-tao">
+        Ông Công Ông Táo
+        <small>Nghi lễ, ý nghĩa, mốc thời gian</small>
+      </a>
+      <a class="drawer-link" href="#!" data-go="tab" data-tab="thi-truong-tet">
+        Thị trường Tết
+        <small>Mua sắm, giá cả, kế hoạch chi tiêu</small>
+      </a>
+      <a class="drawer-link" href="#!" data-go="tab" data-tab="phong-tuc">
+        Phong tục
+        <small>Xông đất, lì xì, kiêng kỵ</small>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="left">
+        <button class="icon-btn" id="openDrawer" aria-label="Mở menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <div class="logo" aria-label="Logo">
+          <span class="logo-badge">V</span>
+          <span>TetNews</span>
+        </div>
+      </div>
+
+      <div class="avatar" title="Tài khoản">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm7 10a7 7 0 1 0-14 0" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="tabs" aria-label="Danh mục">
+      <div class="tabs-row">
+        <a class="tab active" href="#!" data-tab="tet-nguyen-dan">Tết Nguyên Đán</a>
+        <a class="tab" href="#!" data-tab="ong-cong-ong-tao">Ông Công Ông Táo</a>
+        <a class="tab" href="#!" data-tab="thi-truong-tet">Thị trường Tết</a>
+        <a class="tab" href="#!" data-tab="phong-tuc">Phong tục</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- LIST VIEW -->
+    <section id="listView" class="news-card" aria-label="Danh sách bài">
+      <div id="newsList"></div>
+      <hr class="divider" />
+      <div class="hint">
+        <span id="listHint">Có nhiều bài trong mỗi mục — bấm để đọc chi tiết.</span>
+        <span class="pill" id="listCount">0/0</span>
+      </div>
+    </section>
+
+    <!-- ARTICLE VIEW -->
+    <article id="articleView" class="article" aria-label="Bài viết chi tiết">
+      <div class="article-header">
+        <div class="article-tag" id="aTag"></div>
+        <h1 class="article-title" id="aTitle"></h1>
+        <p class="article-sub" id="aSub"></p>
+      </div>
+
+      <div class="hero" aria-hidden="true">
+        <img id="aHero" alt="Ảnh bìa bài viết" />
+      </div>
+
+      <div class="article-body" id="aBody"></div>
+
+      <div class="related" id="relatedWrap" aria-label="Bài liên quan">
+        <h3>Bài liên quan</h3>
+        <div class="related-list" id="relatedList"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="backToList">← Quay lại</button>
+        <button class="btn primary" id="copyLink">Sao chép “link”</button>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    // ================================
+    // ẢNH BÌA — THEO LINK BẠN GỬI
+    // (có fallback phòng khi ảnh bị chặn hotlink)
+    // ================================
+    const COVER_IMAGES = {
+      "tet-nguyen-dan": {
+        remote: "https://tttctt.1cdn.vn/thumbs/540x360/2023/01/17/phao-hoa.jpg",
+        fallback: "https://images.unsplash.com/photo-1467810563316-b5476525c0f9?auto=format&fit=crop&w=1600&q=80"
+      },
+      "ong-cong-ong-tao": {
+        remote: "https://media.dautuvakinhdoanh.vn/images/2023/01/11/9900-1673408772-ong-cong-ong-tao-dautuvakinhdoanh.jpg",
+        fallback: "https://images.unsplash.com/photo-1548588689-98b1f7baf3ef?auto=format&fit=crop&w=1600&q=80"
+      },
+      "thi-truong-tet": {
+        remote: "https://file3.qdnd.vn/data/images/0/2025/01/25/upload_2080/hanoimoi-com-vn-uploads-files-2-1-anh-sieuthibigc-1.jpg?dpi=150&quality=100&w=870",
+        fallback: "https://images.unsplash.com/photo-1511295742362-92c96b5adb36?auto=format&fit=crop&w=1600&q=80"
+      },
+      "phong-tuc": {
+        remote: "https://cdn.tapchitoaan.vn//media/images/mykingdom-y-nghia-tet-nguyen-dan.jpeg",
+        fallback: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=80"
+      }
+    };
+
+    function setImgByTab(imgEl, tabKey){
+      const cfg = COVER_IMAGES[tabKey] || COVER_IMAGES["tet-nguyen-dan"];
+      imgEl.src = cfg.remote;
+      imgEl.onerror = () => { imgEl.src = cfg.fallback; };
+    }
+
+    function setImgByUrlOrTab(imgEl, tabKey, url){
+      if(url){
+        imgEl.src = url;
+        imgEl.onerror = () => setImgByTab(imgEl, tabKey);
+      }else{
+        setImgByTab(imgEl, tabKey);
+      }
+    }
+
+    // =========================================
+    // NỘI DUNG — MỖI MỤC NHIỀU BÀI
+    // (giữ nguyên cấu trúc trang: listView -> articleView)
+    // =========================================
+    const ARTICLES = {
+      "tet-nguyen-dan": [
+        {
+          id:"giao-thua-thieng-lieng",
+          tag:"Gia đình",
+          title:"Giao thừa và ngày Tết: vì sao đây là khoảnh khắc thiêng liêng nhất năm?",
+          desc:"Không chỉ là đổi ngày, giao thừa giống như một nút “reset”: khép chuyện cũ, mở tâm thế mới.",
+          sub:"Cập nhật: 2026 • Đọc ~ 7 phút",
+          heroUrl:"",
+          bodyHTML: `
+            <p class="kicker">Đêm giao thừa, chỉ cần đứng cạnh người thân, nghe tiếng pháo hoa (hoặc tiếng xe ngoài phố), tự nhiên thấy một năm “đi qua” thật rõ.</p>
+            <p>Người Việt gọi đó là khoảnh khắc <b>chuyển giao</b>. Không chỉ chuyển từ 31 sang mồng 1, mà còn là chuyển từ lo toan sang hy vọng, từ tất bật sang sum vầy.</p>
+            <div class="quote">Giao thừa giống như một lời hẹn: “thôi, năm cũ tới đây là đủ rồi, mình bắt đầu lại nha”.</div>
+            <h3>Checklist giao thừa “tối giản mà ấm”</h3>
+            <ul>
+              <li>Dọn nhà vừa đủ gọn (đừng làm kiệt sức).</li>
+              <li>10 phút không điện thoại — nói chuyện thật.</li>
+              <li>Chúc nhau 1 câu chân thành (ngắn thôi cũng được).</li>
+              <li>Chọn 1 thói quen nhỏ cho năm mới.</li>
+            </ul>
+          `
+        },
+        {
+          id:"li-xi-tinh-te",
+          tag:"Tình cảm",
+          title:"Lì xì tinh tế: lời chúc đúng người còn “đã” hơn tiền nhiều",
+          desc:"Bao lì xì đẹp + câu chúc gọn mà trúng = điểm cộng siêu lớn.",
+          sub:"Cập nhật: 2026 • Đọc ~ 4 phút",
+          heroUrl:"https://images.unsplash.com/photo-1615391867782-6a4c1a4c2c60?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <p>Lì xì là lời chúc may mắn. Số tiền nhiều ít quan trọng, nhưng <b>độ tinh tế</b> còn quan trọng hơn.</p>
+            <h3>3 công thức chúc “không sến”</h3>
+            <ul>
+              <li>Chúc bạn <b>khỏe</b> để làm điều mình thích, <b>bền</b> để đi đường dài.</li>
+              <li>Chúc nhà mình luôn ấm, và bạn luôn có nơi để trở về.</li>
+              <li>Năm mới “trơn” hơn: ít mệt, nhiều vui, nhiều điều đáng nhớ.</li>
+            </ul>
+            <div class="note">Tip: Trẻ con nhớ cảm giác được chúc hơn là con số trong bao.</div>
+          `
+        },
+        {
+          id:"don-nha-vua-du",
+          tag:"Mẹo hay",
+          title:"Dọn nhà ngày Tết: 5 bước “vừa đủ” để không mệt mà nhà vẫn sáng",
+          desc:"Dọn đúng chỗ, đúng thời điểm — Tết tới mà không bị kiệt sức.",
+          sub:"Cập nhật: 2026 • Đọc ~ 5 phút",
+          heroUrl:"https://images.unsplash.com/photo-1581579185169-42c4493f0f60?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <p>Đừng dọn nhà theo kiểu “tổng vệ sinh 8 tiếng”. Làm vậy Tết chưa tới đã… đuối.</p>
+            <h3>5 bước dễ áp dụng</h3>
+            <ol>
+              <li>Chọn 1 khu vực ưu tiên: phòng khách / bếp.</li>
+              <li>Vứt/bỏ đồ hỏng trước, rồi mới lau chùi.</li>
+              <li>Lau từ cao xuống thấp, từ trong ra ngoài.</li>
+              <li>Gom đồ theo nhóm (đừng vừa dọn vừa chạy).</li>
+              <li>Chốt 30 phút “trang trí góc đẹp” (hoa + đèn).</li>
+            </ol>
+            <div class="quote">Một góc đẹp còn “ăn Tết” hơn cả căn nhà dọn quá sức.</div>
+          `
+        }
+      ],
+
+      "ong-cong-ong-tao": [
+        {
+          id:"tao-quan-gon-trang-trong",
+          tag:"Phong tục",
+          title:"Ông Công Ông Táo: chuẩn bị sao cho gọn mà vẫn trang trọng?",
+          desc:"Không cần cầu kỳ. Quan trọng nhất là bếp sạch, nhà ấm và lòng thành.",
+          sub:"Cập nhật: 2026 • Đọc ~ 8 phút",
+          heroUrl:"",
+          bodyHTML: `
+            <p class="kicker">Lễ Táo quân có một cái hay: khiến nhà mình tự động “vào guồng Tết”. Dọn bếp, sắp lại mọi thứ — tự nhiên thấy năm mới gần hơn.</p>
+            <h3>Mâm cúng tối giản (nhưng đủ ý)</h3>
+            <ul>
+              <li>Hương, hoa, nước sạch hoặc trà</li>
+              <li>Trái cây + bánh kẹo (tuỳ)</li>
+              <li>Mâm mặn hoặc chay (tuỳ gia đình)</li>
+              <li>Cá chép (cá sống/cá giấy tuỳ địa phương)</li>
+            </ul>
+            <div class="note">Tip: Nếu thả cá, thả nhẹ nhàng và không xả rác.</div>
+          `
+        },
+        {
+          id:"van-khan-ngan",
+          tag:"Gợi ý",
+          title:"Văn khấn Táo quân ngắn gọn, dễ đọc (kiểu hiện đại)",
+          desc:"Không cần dài dòng — chỉ cần rõ: tri ân, cầu bình an, cầu thuận hòa.",
+          sub:"Cập nhật: 2026 • Đọc ~ 3 phút",
+          heroUrl:"https://images.unsplash.com/photo-1518903847011-3c26a3a7a7bb?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <p>Bạn có thể khấn ngắn theo cấu trúc: <b>kính – tri ân – cầu điều tốt</b>.</p>
+            <div class="quote">“Con kính lạy Táo quân, xin chứng giám lòng thành. Cảm ơn một năm đã che chở bếp ấm nhà yên. Xin phù hộ gia đạo bình an, thuận hòa, sức khỏe dồi dào, mọi việc hanh thông.”</div>
+            <p class="muted">Nếu gia đình bạn có bài khấn riêng theo vùng miền, ưu tiên dùng bài đó nhé.</p>
+          `
+        },
+        {
+          id:"don-bep-10-phut",
+          tag:"Mẹo hay",
+          title:"Dọn bếp 10 phút trước lễ Táo quân: gọn, sạch, lên mood Tết",
+          desc:"Bếp sạch là “tín hiệu” cho một năm mới gọn gàng và dễ chịu.",
+          sub:"Cập nhật: 2026 • Đọc ~ 4 phút",
+          heroUrl:"https://images.unsplash.com/photo-1556912173-3bb406ef7e77?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <ol>
+              <li>Lau nhanh mặt bếp + tay nắm tủ.</li>
+              <li>Rửa bồn rửa, bỏ rác tồn.</li>
+              <li>Gom bát đũa về đúng vị trí.</li>
+              <li>Đặt một hũ quế/chanh khô tạo mùi thơm.</li>
+            </ol>
+            <div class="note">Tip: Làm trước 1 ngày để hôm cúng không vội.</div>
+          `
+        }
+      ],
+
+      "thi-truong-tet": [
+        {
+          id:"mua-sam-giu-vi",
+          tag:"Tiêu dùng",
+          title:"Thị trường Tết: mua sao cho vui mà ví không “đuối”?",
+          desc:"Tết dễ khiến mình mua theo cảm xúc. Một checklist nhỏ sẽ giúp tiết kiệm khá nhiều.",
+          sub:"Cập nhật: 2026 • Đọc ~ 9 phút",
+          heroUrl:"",
+          bodyHTML: `
+            <p class="kicker">Gần Tết, giá cả nhấp nhổm, người mua đông, tâm lý sợ thiếu. Nhưng chỉ cần có kế hoạch, bạn vẫn sắm đủ mà không bị đuối.</p>
+            <h3>4 “bẫy mua sắm” hay gặp</h3>
+            <ul>
+              <li>Mua theo mood: thấy đẹp là bỏ giỏ.</li>
+              <li>Sợ thiếu: mua dư gấp đôi “cho chắc”.</li>
+              <li>Không kiểm kho: mua trùng đồ trong tủ.</li>
+              <li>Ham bao bì: giỏ quà hộp đẹp nhưng bên trong ít hữu dụng.</li>
+            </ul>
+            <div class="quote">Mẹo nhỏ: “mua ít nhưng đúng” luôn rẻ hơn “mua nhiều rồi bỏ”.</div>
+          `
+        },
+        {
+          id:"lich-mua-thong-minh",
+          tag:"Kế hoạch",
+          title:"Lịch mua sắm 3 mốc: trước Tết 3 tuần – 1 tuần – 2 ngày",
+          desc:"Chia thời điểm mua giúp đỡ đông, đỡ hoảng, và đồ tươi hơn.",
+          sub:"Cập nhật: 2026 • Đọc ~ 5 phút",
+          heroUrl:"https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <ol>
+              <li><b>Trước Tết 2–3 tuần:</b> đồ khô, đồ dọn nhà, bao lì xì.</li>
+              <li><b>Trước Tết 1 tuần:</b> quà biếu + một phần bánh mứt.</li>
+              <li><b>Trước Tết 1–2 ngày:</b> đồ tươi, hoa quả chưng, món ăn chính.</li>
+            </ol>
+            <div class="note">Tip: Chừa 10–20% ngân sách dự phòng cho phát sinh.</div>
+          `
+        },
+        {
+          id:"gio-qua-tet",
+          tag:"Gợi ý",
+          title:"Chọn giỏ quà Tết tinh tế: 3 tiêu chí “nhìn sang” mà không phô",
+          desc:"Ít món nhưng chất, bao bì gọn, và đúng người nhận là đủ “điểm”.",
+          sub:"Cập nhật: 2026 • Đọc ~ 4 phút",
+          heroUrl:"https://images.unsplash.com/photo-1604908554025-74d2c4aa1bea?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <ul>
+              <li><b>Đúng gu người nhận:</b> trà/đặc sản/bánh tuỳ độ tuổi.</li>
+              <li><b>Ưu tiên chất lượng:</b> hạn dùng rõ ràng, nguồn gốc ổn.</li>
+              <li><b>Gọn mà đẹp:</b> hộp vừa phải, phối màu đỏ–vàng tinh tế.</li>
+            </ul>
+            <div class="quote">Quà Tết sang nhất là quà “đúng ý”, không phải quà “to”.</div>
+          `
+        }
+      ],
+
+      "phong-tuc": [
+        {
+          id:"phong-tuc-hieu-dung",
+          tag:"Văn hoá",
+          title:"Phong tục Tết: xông đất, lì xì, kiêng kỵ — hiểu đúng để Tết nhẹ mà vui",
+          desc:"Phong tục không phải để áp lực. Hiểu đúng sẽ thấy đây là những thói quen đẹp.",
+          sub:"Cập nhật: 2026 • Đọc ~ 9 phút",
+          heroUrl:"",
+          bodyHTML: `
+            <p class="kicker">Nhiều người ngại phong tục vì sợ “lỡ sai là xui”. Nhưng nhìn đúng, phong tục chủ yếu để giữ không khí vui và sự tinh tế.</p>
+            <h3>Xông đất “nhẹ nhàng”</h3>
+            <p>Bạn có thể <b>tự xông đất</b> (chủ nhà bước ra ngoài rồi vào lại) để không phải suy nghĩ nhiều.</p>
+            <h3>Lì xì: giá trị nằm ở lời chúc</h3>
+            <div class="quote">Lì xì đẹp nhất là kèm một câu chúc đúng người — đúng lúc.</div>
+            <h3>Kiêng kỵ phổ biến (hiểu cho nhẹ)</h3>
+            <ul>
+              <li>Tránh cãi vã mồng 1 (ai cũng muốn khởi đầu vui).</li>
+              <li>Hạn chế nói điều tiêu cực (đầu năm ưu tiên lời đẹp).</li>
+              <li>Giữ nhà cửa gọn gàng (tâm cũng “gọn”).</li>
+            </ul>
+          `
+        },
+        {
+          id:"di-chua-dau-nam",
+          tag:"Du xuân",
+          title:"Đi chùa đầu năm: đi để lòng yên, không phải xin cho đủ",
+          desc:"Đi sớm cho đỡ đông, nói nhỏ nhẹ, và giữ tâm tốt.",
+          sub:"Cập nhật: 2026 • Đọc ~ 5 phút",
+          heroUrl:"https://images.unsplash.com/photo-1507477338202-487281e6c27e?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <h3>3 điều nhỏ giúp chuyến đi dễ chịu</h3>
+            <ul>
+              <li>Đi sớm hoặc đi giờ vắng.</li>
+              <li>Ăn mặc lịch sự, nói chuyện nhỏ nhẹ.</li>
+              <li>Không xả rác, không chen lấn.</li>
+            </ul>
+            <div class="note">Bạn có thể “cầu” ít thôi: sức khoẻ + bình an + thuận hoà.</div>
+          `
+        },
+        {
+          id:"xong-dat-nhe",
+          tag:"Mẹo hay",
+          title:"Xông đất: 4 cách chọn người “hợp vía” mà không gây áp lực",
+          desc:"Quan trọng nhất vẫn là không khí vui vẻ và sự thoải mái của cả nhà.",
+          sub:"Cập nhật: 2026 • Đọc ~ 4 phút",
+          heroUrl:"https://images.unsplash.com/photo-1542114360-7c2d88b03b53?auto=format&fit=crop&w=1600&q=80",
+          bodyHTML: `
+            <ul>
+              <li>Chọn người thân hay mang năng lượng tích cực.</li>
+              <li>Tránh nhờ người đang bận/khó xử (đỡ ngại).</li>
+              <li>Nếu khó chọn: <b>tự xông đất</b> là gọn nhất.</li>
+              <li>Đừng “đổ lỗi” phong tục cho những điều không như ý.</li>
+            </ul>
+            <div class="quote">Phong tục sinh ra để Tết vui — không phải để tạo áp lực.</div>
+          `
+        }
+      ]
+    };
+
+    // ===== Drawer =====
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const openDrawerBtn = document.getElementById('openDrawer');
+    const closeDrawerBtn = document.getElementById('closeDrawer');
+
+    function openDrawer(){
+      drawer.classList.add('open');
+      backdrop.style.display = 'block';
+    }
+    function closeDrawer(){
+      drawer.classList.remove('open');
+      backdrop.style.display = 'none';
+    }
+    openDrawerBtn.addEventListener('click', openDrawer);
+    closeDrawerBtn.addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+
+    // ===== Views =====
+    const listView = document.getElementById('listView');
+    const articleView = document.getElementById('articleView');
+
+    const newsList = document.getElementById('newsList');
+    const listCount = document.getElementById('listCount');
+
+    const aTag   = document.getElementById('aTag');
+    const aTitle = document.getElementById('aTitle');
+    const aSub   = document.getElementById('aSub');
+    const aHero  = document.getElementById('aHero');
+    const aBody  = document.getElementById('aBody');
+
+    const relatedList = document.getElementById('relatedList');
+
+    const backToList  = document.getElementById('backToList');
+
+    let currentTab = "tet-nguyen-dan";
+    let currentArticleId = null;
+
+    function makeItem(tabKey, article){
+      const row = document.createElement('div');
+      row.className = 'news-item';
+      row.setAttribute('data-id', article.id);
+      row.innerHTML = `
+        <div class="thumb" aria-hidden="true"><img alt="Ảnh bìa" /></div>
+        <div class="meta">
+          <h2 class="title"></h2>
+          <p class="subline"></p>
+          <div class="tag"><span class="dot"></span><span class="tagText"></span></div>
+        </div>
+      `;
+
+      const img = row.querySelector('img');
+      setImgByUrlOrTab(img, tabKey, article.heroUrl);
+
+      row.querySelector('.title').textContent = article.title;
+      row.querySelector('.subline').textContent = article.desc;
+      row.querySelector('.tagText').textContent = article.tag;
+
+      row.addEventListener('click', ()=> renderArticle(tabKey, article.id));
+      return row;
+    }
+
+    function renderList(tabKey){
+      const arr = ARTICLES[tabKey];
+      if(!arr || !arr.length) return;
+
+      newsList.innerHTML = "";
+      arr.forEach((a, idx)=>{
+        newsList.appendChild(makeItem(tabKey, a));
+        if(idx !== arr.length - 1){
+          const hr = document.createElement('hr');
+          hr.className = 'divider';
+          newsList.appendChild(hr);
+        }
+      });
+
+      listCount.textContent = `${arr.length}/${arr.length}`;
+
+      articleView.style.display = "none";
+      listView.style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderRelated(tabKey, currentId){
+      const arr = ARTICLES[tabKey] || [];
+      const others = arr.filter(x => x.id !== currentId).slice(0, 3);
+
+      relatedList.innerHTML = "";
+      if(others.length === 0){
+        relatedList.innerHTML = `<div class="muted">Chưa có bài liên quan trong mục này.</div>`;
+        return;
+      }
+
+      others.forEach(x=>{
+        const el = document.createElement('div');
+        el.className = 'related-item';
+        el.innerHTML = `
+          <div class="related-thumb" aria-hidden="true"><img alt="Ảnh liên quan"></div>
+          <div class="related-meta">
+            <p class="related-title"></p>
+            <p class="related-sub"></p>
+          </div>
+        `;
+        const img = el.querySelector('img');
+        setImgByUrlOrTab(img, tabKey, x.heroUrl);
+
+        el.querySelector('.related-title').textContent = x.title;
+        el.querySelector('.related-sub').textContent = x.desc;
+
+        el.addEventListener('click', ()=> renderArticle(tabKey, x.id));
+        relatedList.appendChild(el);
+      });
+    }
+
+    function renderArticle(tabKey, articleId){
+      const arr = ARTICLES[tabKey];
+      if(!arr) return;
+      const a = arr.find(x=>x.id===articleId) || arr[0];
+      if(!a) return;
+
+      currentArticleId = a.id;
+
+      aTag.textContent   = a.tag;
+      aTitle.textContent = a.title;
+      aSub.textContent   = a.sub;
+
+      setImgByUrlOrTab(aHero, tabKey, a.heroUrl);
+      aBody.innerHTML    = a.bodyHTML;
+
+      renderRelated(tabKey, a.id);
+
+      listView.style.display = "none";
+      articleView.style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // update hash
+      history.replaceState(null, "", "#" + tabKey + "/" + a.id);
+    }
+
+    // Tabs click
+    document.querySelectorAll('.tab').forEach(t=>{
+      t.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const key = t.getAttribute('data-tab');
+        if(!ARTICLES[key]) return;
+
+        currentTab = key;
+        currentArticleId = null;
+
+        document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+
+        renderList(currentTab);
+      });
+    });
+
+    // Back to list
+    backToList.addEventListener('click', ()=> renderList(currentTab));
+
+    // Drawer go tab
+    document.querySelectorAll('.drawer-link').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const tab = a.getAttribute('data-tab');
+        closeDrawer();
+        if(!tab || !ARTICLES[tab]) return;
+
+        currentTab = tab;
+        currentArticleId = null;
+
+        document.querySelectorAll('.tab').forEach(x=>{
+          x.classList.toggle('active', x.getAttribute('data-tab') === tab);
+        });
+        renderList(currentTab);
+      });
+    });
+
+    // Copy pseudo link
+    document.getElementById('copyLink').addEventListener('click', async ()=>{
+      const pseudoLink = location.origin + location.pathname + '#' + currentTab + (currentArticleId ? ("/" + currentArticleId) : "");
+      try{
+        await navigator.clipboard.writeText(pseudoLink);
+        alert('Đã sao chép: ' + pseudoLink);
+      }catch{
+        prompt('Copy link bên dưới:', pseudoLink);
+      }
+    });
+
+    // ===== INIT =====
+    window.addEventListener('load', ()=> {
+      const hash = (location.hash || "").replace("#", "").trim();
+      let tab = "";
+      let aid = "";
+      if(hash.includes("/")){
+        [tab, aid] = hash.split("/");
+      }else{
+        tab = hash;
+      }
+
+      if(tab && ARTICLES[tab]) currentTab = tab;
+
+      document.querySelectorAll('.tab').forEach(x=>{
+        x.classList.toggle('active', x.getAttribute('data-tab') === currentTab);
+      });
+
+      // if hash contains article id -> open article
+      if(aid && ARTICLES[currentTab]?.some(x=>x.id===aid)){
+        renderArticle(currentTab, aid);
+      }else{
+        renderList(currentTab);
+      }
+    });
+  </script>
+
+  <script>
+    // =========================
+    // Petals + Glitter Generator
+    // =========================
+    (function initPetalsGlitter(){
+      const petalsWrap = document.getElementById("petals");
+      const glitterWrap= document.getElementById("glitter");
+      if(!petalsWrap || !glitterWrap) return;
+
+      const PETALS_COUNT  = 24;
+      const GLITTER_COUNT = 75;
+
+      function makePetal(){
+        const p = document.createElement("span");
+        p.className = "petal";
+
+        const left = Math.random()*100;
+        const size = 8 + Math.random()*10;
+        const dur  = 9 + Math.random()*10;
+        const delay= Math.random()*-dur;
+        const dx   = (Math.random()*180 - 90).toFixed(0) + "px";
+        const rot  = (Math.random()*540 + 180).toFixed(0) + "deg";
+
+        p.style.left = left + "vw";
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+        p.style.animationDuration = dur + "s";
+        p.style.animationDelay = delay + "s";
+        p.style.setProperty("--dx", dx);
+        p.style.setProperty("--rot", rot);
+
+        const hueShift = (Math.random()*14 - 7);
+        p.style.filter = `saturate(1.1) hue-rotate(${hueShift}deg)`;
+
+        petalsWrap.appendChild(p);
+      }
+
+      function makeGlitter(){
+        const g = document.createElement("span");
+        g.className = "glit";
+
+        const left = Math.random()*100;
+        const dur  = 7 + Math.random()*12;
+        const delay= Math.random()*-dur;
+        const dx   = (Math.random()*120 - 60).toFixed(0) + "px";
+
+        g.style.left = left + "vw";
+        g.style.animationDuration = dur + "s, " + (1.2 + Math.random()*1.8).toFixed(2) + "s";
+        g.style.animationDelay = delay + "s, " + (Math.random()*-2).toFixed(2) + "s";
+        g.style.setProperty("--dx", dx);
+
+        const alpha = (0.55 + Math.random()*0.45).toFixed(2);
+        g.style.background = `rgba(255, 230, 160, ${alpha})`;
+
+        glitterWrap.appendChild(g);
+      }
+
+      function build(){
+        petalsWrap.innerHTML = "";
+        glitterWrap.innerHTML = "";
+        for(let i=0;i<PETALS_COUNT;i++)  makePetal();
+        for(let i=0;i<GLITTER_COUNT;i++) makeGlitter();
+      }
+
+      document.addEventListener("visibilitychange", ()=>{
+        if(document.hidden){
+          petalsWrap.style.display = "none";
+          glitterWrap.style.display= "none";
+        }else{
+          petalsWrap.style.display = "block";
+          glitterWrap.style.display= "block";
+        }
+      });
+
+      build();
+
+      let t;
+      window.addEventListener("resize", ()=>{
+        clearTimeout(t);
+        t = setTimeout(build, 250);
+      });
+    })();
+  </script>
+</body>
+</html>

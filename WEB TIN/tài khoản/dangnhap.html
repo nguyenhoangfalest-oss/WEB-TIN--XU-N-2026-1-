@@ -1,0 +1,358 @@
+﻿
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Xuân 12A1 • Đăng nhập</title>
+
+  <style>
+    /* =======================
+      TẾT FX: Cành mai + rơi hoa/tiền
+    ======================= */
+
+    .fx-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:50; /* nằm trên nền, dưới card */
+    }
+
+    .fx-branch{
+      position:fixed;
+      top:0;
+      width:260px;
+      height:100vh;
+      pointer-events:none;
+      z-index:40;
+      opacity:.95;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.25));
+    }
+    .fx-branch.left{ left:-30px; transform:rotate(-2deg); }
+    .fx-branch.right{ right:-30px; transform:scaleX(-1) rotate(-2deg); }
+
+    .fx-branch::before,
+    .fx-branch::after{
+      content:"";
+      position:absolute;
+      left:40px;
+      top:-40px;
+      width:18px;
+      height:120%;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(60,22,0,.92), rgba(120,60,0,.85));
+      transform:rotate(12deg);
+    }
+    .fx-branch::after{
+      left:70px;
+      width:10px;
+      height:70%;
+      opacity:.85;
+      transform:rotate(26deg);
+    }
+
+    .fx-blossoms{ position:absolute; inset:0; }
+    .fx-blossoms span{
+      position:absolute;
+      font-size:22px;
+      opacity:.9;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,.25));
+    }
+
+    .fall-item{
+      position:absolute;
+      top:-60px;
+      left:0;
+      will-change: transform;
+      user-select:none;
+      pointer-events:none;
+      opacity:.55;
+      filter: blur(.2px);
+      animation-name: fallDown;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    .fall-flower{ opacity:.65; filter: drop-shadow(0 10px 12px rgba(0,0,0,.18)); }
+    .fall-coin{ opacity:.28; filter: blur(.4px) drop-shadow(0 10px 12px rgba(0,0,0,.10)); }
+
+    @keyframes fallDown{
+      0%{ transform: translate3d(var(--x,0px), -80px, 0) rotate(0deg); }
+      100%{
+        transform: translate3d(
+          calc(var(--x,0px) + var(--drift,120px)),
+          calc(100vh + 120px),
+          0
+        ) rotate(var(--rot,540deg));
+      }
+    }
+
+    /* =======================
+      NÚT: hover + click zoom + viền sáng
+    ======================= */
+    button{
+      position:relative;
+      transition: transform .14s ease, box-shadow .14s ease, outline-color .14s ease, filter .14s ease;
+      outline: 2px solid transparent;
+      outline-offset: 3px;
+    }
+    button:hover{
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 14px 28px rgba(0,0,0,.28);
+      outline-color: rgba(255,215,0,.55);
+    }
+    button.btn-active{
+      transform: translateY(-2px) scale(1.08);
+      outline-color: rgba(255,215,0,.95);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,.35),
+        0 0 0 6px rgba(255,215,0,.18);
+      filter: saturate(1.05);
+    }
+
+    /* =======================
+      THEME
+    ======================= */
+    :root{
+      --line:rgba(255,255,255,.18);
+      --text:#fff3f7;
+      --muted:#ffe0ec;
+      --gold:#ffd700;
+      --btn:#ffd700;
+      --btn2:#5c0014;
+      --radius:26px;
+    }
+    *{box-sizing:border-box}
+
+    /* ✅ BƯỚC 2: BACKGROUND ẢNH */
+    body{
+      margin:0;
+      font-family:"Times New Roman", Times, serif;
+
+background: url("../mini game/bau.png") no-repeat center center fixed;
+background-size: 100%;
+background-position: center 30%;
+
+
+      color:var(--text);
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:26px;
+      position:relative;
+    }
+
+    /* ✅ BƯỚC 2: LỚP PHỦ TỐI NHẸ */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background: rgba(120,0,0,0.55);
+      backdrop-filter: blur(2px);
+      z-index:0;
+    }
+
+    .web-logo{
+      position:fixed;
+      top:18px;
+      left:22px;
+      font-size:38px;
+      z-index:999;
+      animation: floatLogo 3s ease-in-out infinite;
+    }
+    @keyframes floatLogo{
+      0%{transform:translateY(0px);}
+      50%{transform:translateY(-6px);}
+      100%{transform:translateY(0px);}
+    }
+
+    .logo-watermark{
+      position:absolute;
+      top:10px;
+      right:20px;
+      font-size:60px;
+      opacity:.08;
+      pointer-events:none;
+    }
+
+    .container{
+      width:min(1050px,100%);
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      position:relative;
+      z-index:2;
+    }
+    @media (max-width:900px){ .container{grid-template-columns:1fr} }
+
+    /* ✅ BƯỚC 3: CARD NỔI TRÊN BACKGROUND */
+    .card{
+      background: linear-gradient(180deg, rgba(179,0,59,.92), rgba(139,0,0,.92));
+      border:3px solid var(--gold);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:0 18px 55px rgba(0,0,0,.45);
+      position:relative;
+      z-index:60;
+    }
+
+    h1{
+      margin:0;
+      font-size:42px;
+      font-weight:900;
+      color:var(--gold);
+      text-align:center;
+      letter-spacing:1px;
+    }
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      margin:10px 0 18px;
+      font-size:18px;
+    }
+
+    label{display:block;margin-top:14px}
+    label span{
+      display:block;
+      font-size:18px;
+      margin-bottom:8px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    input{
+      width:100%;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.12);
+      color:var(--text);
+      outline:none;
+      font-size:18px;
+    }
+    input::placeholder{color:#ffd1e3}
+
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    button{
+      border:0;
+      border-radius:16px;
+      padding:12px 18px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:18px;
+      font-family:"Times New Roman", Times, serif;
+    }
+
+    .btn{background:var(--btn); color:#7a0000;}
+    .btn.secondary{background:var(--btn2); color:var(--text); border:1px solid var(--line)}
+    .btn.google{background:#fff; color:#7a0000;}
+
+    .msg{
+      margin-top:12px;
+      font-size:16px;
+      color:var(--muted);
+      line-height:1.4;
+      min-height:22px;
+    }
+    .danger{color:#ffd0d0}
+
+    .hint{margin-top:10px;font-size:15px;color:var(--muted);}
+    .title2{margin:0;color:var(--gold);font-size:28px;font-weight:900;}
+
+    .login-link{margin-top:12px;text-align:center;}
+    .login-link a{color:#0b1bff;font-weight:900;text-decoration:underline;}
+
+    .profile{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      padding:14px;
+      border:2px solid var(--gold);
+      border-radius:18px;
+      margin-top:14px;
+      background:rgba(255,255,255,.08);
+    }
+    .avatar{
+      width:64px;height:64px;
+      border-radius:50%;
+      border:3px solid var(--gold);
+      object-fit:cover;
+    }
+    .name{font-weight:900;color:var(--gold); font-size:22px}
+    .email{font-size:16px;color:var(--muted)}
+    .hidden{display:none !important}
+  </style>
+</head>
+
+<body>
+  <div class="web-logo">🌸</div>
+
+  <div class="container">
+
+    <!-- FORM: ĐĂNG NHẬP + GOOGLE -->
+    <section class="card">
+      <div class="logo-watermark">🌸</div>
+
+      <h1>🎊 Trang đăng nhập - Xuân 12A1 🎊</h1>
+      <div class="sub">🌸 Tết Bính Ngọ 2026 – Lớp 12A1 🌸</div>
+
+      <label>
+        <span>✉️ Email</span>
+        <input id="email" type="email" placeholder="abc123@gmail.com" autocomplete="email">
+      </label>
+
+      <label>
+        <span>🔑 Mật khẩu</span>
+        <input id="password" type="password" placeholder="123456" autocomplete="current-password">
+      </label>
+
+      <div class="row">
+        <button id="btnLogin" class="btn">Đăng nhập</button>
+        <button id="btnGoogle" class="btn google">Google</button>
+      </div>
+
+      <div id="msg" class="msg"></div>
+      <div class="hint">Bạn có thể đăng nhập bằng Email/Mật khẩu hoặc Google.</div>
+
+      <p class="login-link">
+        <a href="dangki.html">Chưa có tài khoản? Đăng ký</a>
+      </p>
+    </section>
+
+    <!-- STATUS -->
+    <section class="card">
+      <h2 class="title2">Thông tin website</h2>
+
+      <div id="loggedOut" class="msg">
+        Nơi kết nối – chia sẻ – đồng hành cùng nhau trong mùa xuân và kỳ thi phía trước.
+      </div>
+
+      <div id="loggedIn" class="hidden">
+        <div class="profile">
+          <img id="avatar" class="avatar" alt="avatar">
+          <div>
+            <div id="name" class="name"></div>
+            <div id="userEmail" class="email"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <button id="btnLogout" class="btn secondary">Đăng xuất</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script type="module" src="login.js"></script>
+  <script type="module" src="fx.js"></script>
+</body>
+</html>
+
+

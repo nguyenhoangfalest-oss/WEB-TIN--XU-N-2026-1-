@@ -1,0 +1,594 @@
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Đập Niêu Online</title>
+  <style>
+    :root{
+      --bg1:#8a1020; --bg2:#b4172a;
+      --gold:#ffd36a; --cream:#fff4da;
+      --card:rgba(255,255,255,.12); --card2:rgba(255,255,255,.18);
+      --stroke:rgba(255,255,255,.22);
+      --shadow: 0 18px 40px rgba(0,0,0,.28);
+      --shadow2: 0 10px 24px rgba(0,0,0,.22);
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color: var(--cream);
+      background: transparent;
+      overflow-x:hidden;
+    }
+
+    /* FIX nền bị cắt: nền fixed phủ full màn */
+    .bg-base{
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background:
+        radial-gradient(900px 420px at 18% 10%, rgba(255,211,106,.25), transparent 60%),
+        radial-gradient(700px 360px at 80% 20%, rgba(255,184,77,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
+    }
+    .bg-pattern{
+      position:fixed; inset:0; pointer-events:none;
+      z-index:-2;
+      background:
+        radial-gradient(circle at 25% 30%, rgba(255,255,255,.10) 0 2px, transparent 3px) 0 0/36px 36px,
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,.08) 0 1.5px, transparent 2.5px) 0 0/28px 28px;
+      opacity:.35; mix-blend-mode: overlay;
+    }
+
+    .wrap{ max-width:1050px; margin:0 auto; padding:18px 16px 50px; }
+    .top{ display:flex; gap:14px; align-items:stretch; justify-content:space-between; flex-wrap:wrap; }
+    .brand{ display:flex; gap:12px; align-items:center; min-width:280px; }
+    .logo{
+      width:56px; height:56px; border-radius:16px; display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(255,211,106,.34), rgba(255,255,255,.10));
+      border:1px solid rgba(255,255,255,.22);
+      box-shadow: var(--shadow2);
+      font-size:28px;
+    }
+    .title h1{ margin:0; letter-spacing:.8px; font-weight:900; font-size:24px; }
+    .title p{ margin:4px 0 0; opacity:.9; font-size:13px; }
+
+    .panel{
+      flex:1; min-width:320px;
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      border:1px solid var(--stroke);
+      border-radius:18px; box-shadow: var(--shadow);
+      padding:12px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .stat{
+      display:flex; justify-content:space-between; align-items:baseline;
+      padding:8px 10px; border-radius:14px;
+      background: rgba(0,0,0,.10);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .stat .label{ opacity:.9; font-size:13px; }
+    .stat .value{ font-weight:900; font-size:18px; color: var(--gold); text-shadow:0 1px 0 rgba(0,0,0,.25); }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      padding: 6px 8px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.12);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .controls .ctl-label{
+      font-size:13px; opacity:.95; font-weight:900;
+    }
+    .customMul{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.10);
+    }
+    .customMul input{
+      width: 110px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      color: var(--cream);
+      font-weight: 900;
+      outline:none;
+    }
+    .mini{
+      font-size:12px;
+      opacity:.95;
+      font-weight:900;
+      color: var(--gold);
+      text-shadow:0 1px 0 rgba(0,0,0,.25);
+      margin-left:auto;
+    }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; padding:6px 2px 2px; }
+    .btn{
+      border:1px solid rgba(255,255,255,.20);
+      background: rgba(0,0,0,.14);
+      color: var(--cream);
+      padding:10px 12px; border-radius:14px;
+      cursor:pointer; font-weight:800;
+      box-shadow:0 10px 18px rgba(0,0,0,.18);
+      transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.04); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,211,106,.85), rgba(255,184,77,.78));
+      color:#381a12; border-color: rgba(0,0,0,.08);
+    }
+    .btn.ghost{ background: transparent; border-color: rgba(255,255,255,.22); }
+    .btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
+    .main{ margin-top:14px; }
+    .board{
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:18px; box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .board-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .board-head h2{ margin:0; font-size:18px; letter-spacing:.3px; }
+    .hint{ font-size:13px; opacity:.92; max-width: 720px; }
+
+    .grid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
+    .pot{
+      position:relative;
+      min-height:140px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.22);
+      background:
+        radial-gradient(120px 100px at 50% 40%, rgba(255,211,106,.18), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.10));
+      box-shadow:0 14px 28px rgba(0,0,0,.22);
+      cursor:pointer;
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    .pot:hover{ transform: translateY(-2px); filter: brightness(1.05); }
+    .pot:active{ transform: translateY(0px) scale(.99); }
+    .pot[disabled]{ opacity:.55; cursor:not-allowed; transform:none !important; filter:none !important; }
+
+    .pot .emoji{ font-size:54px; filter: drop-shadow(0 10px 12px rgba(0,0,0,.25)); }
+
+    /* CHỮ SAU KHI ĐẬP: RÕ HƠN (không mờ) */
+    .pot .sub{
+      font-size: 14px;
+      opacity: 1;
+      font-weight: 900;
+      text-align: center;
+      padding: 7px 10px;
+      border-radius: 12px;
+      background: rgba(0,0,0,.34);         /* nền tối hơn để nổi */
+      border: 1px solid rgba(255,255,255,.18);
+      text-shadow: 0 2px 0 rgba(0,0,0,.45); /* shadow mạnh hơn */
+      line-height: 1.2;
+    }
+    .pot.won .sub{
+      color: #fff6d8;
+      border-color: rgba(255,211,106,.65);
+      background: rgba(0,0,0,.28);
+    }
+
+    .crack{
+      position:absolute; inset:0; opacity:0;
+      background:
+        repeating-linear-gradient(125deg, rgba(255,255,255,.0) 0 10px, rgba(255,255,255,.25) 10px 12px),
+        repeating-linear-gradient(55deg, rgba(0,0,0,.0) 0 14px, rgba(0,0,0,.18) 14px 16px);
+      mix-blend-mode: overlay;
+      transition: opacity .15s ease;
+    }
+    .pot.broken .crack{ opacity:.9; }
+    .pot.broken{ animation: shake .28s ease-in-out 1; }
+    @keyframes shake{
+      0%{ transform: translateX(0) rotate(0deg); }
+      25%{ transform: translateX(-2px) rotate(-1deg); }
+      50%{ transform: translateX(2px) rotate(1deg); }
+      75%{ transform: translateX(-1px) rotate(-.5deg); }
+      100%{ transform: translateX(0) rotate(0deg); }
+    }
+
+    .coin-fly{
+      position:absolute; left:50%; top:50%;
+      transform: translate(-50%,-50%);
+      font-size:34px; opacity:0; pointer-events:none;
+    }
+    .pot.won .coin-fly{ animation: fly 700ms ease-out 1; opacity:1; }
+    @keyframes fly{
+      0%{ transform: translate(-50%,-30%) scale(.9); opacity:0; }
+      20%{ opacity:1; }
+      100%{ transform: translate(-50%,-140%) scale(1.15); opacity:0; }
+    }
+
+    .toast{
+      position:fixed; left:50%; bottom:18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.60);
+      border:1px solid rgba(255,255,255,.22);
+      box-shadow: var(--shadow2);
+      padding:10px 14px; border-radius:14px;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      max-width: min(860px, calc(100% - 24px));
+      text-align:center;
+      font-weight:900;
+      z-index: 50;
+    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-4px); }
+
+    @media (max-width:720px){
+      .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .pot{ min-height:130px; }
+      .mini{ width:100%; margin-left:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-base" aria-hidden="true"></div>
+  <div class="bg-pattern" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🧧</div>
+        <div class="title">
+          <h1>ĐẬP NIÊU ONLINE</h1>
+          <p>Phí ván = 25 × hệ số • 3 lượt đập • Reset chỉ khi xu &lt; 25</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="stat">
+          <span class="label">Xu hiện có</span>
+          <span class="value" id="coins">100</span>
+        </div>
+        <div class="stat">
+          <span class="label">Phí ván</span>
+          <span class="value" id="feeLabel">25</span>
+        </div>
+        <div class="stat">
+          <span class="label">Lượt đập còn lại</span>
+          <span class="value" id="hitsLeft">0</span>
+        </div>
+
+        <div class="controls">
+          <div class="ctl-label">Hệ số:</div>
+
+          <div class="customMul" title="Nhập hệ số bất kỳ (>=1)">
+            <span style="font-weight:900; opacity:.95;">x</span>
+            <input id="mulInput" inputmode="numeric" pattern="[0-9]*" placeholder="1" value="1" />
+          </div>
+
+          <div class="mini" id="rewardInfo">Thưởng: 10–30</div>
+        </div>
+
+        <div class="actions">
+          <button id="btnStart" class="btn primary">Bắt đầu ván</button>
+          <button id="btnPlayAgain" class="btn" disabled>Chơi ván mới</button>
+          <button id="btnMute" class="btn ghost" aria-pressed="false" title="Bật/tắt âm thanh">🔊 Âm thanh</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="board">
+        <div class="board-head">
+          <h2>6 cái niêu</h2>
+          <div class="hint" id="hint">Nhập hệ số → bấm “Bắt đầu ván” để trừ phí và nhận 3 lượt đập.</div>
+        </div>
+
+        <div class="grid" id="potsGrid" aria-label="Bàn niêu"></div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script>
+    // ====== CONFIG ======
+    const START_COINS = 100;
+    const BASE_COST = 25;
+    const HITS_PER_ROUND = 3;
+
+    const POTS_TOTAL = 6;
+    const REWARD_POTS = 3;
+    const BASE_REWARD_MIN = 1;
+    const BASE_REWARD_MAX = 30;
+
+    // ====== DOM ======
+    const $ = (s) => document.querySelector(s);
+    const coinsEl = $("#coins");
+    const feeLabelEl = $("#feeLabel");
+    const hitsLeftEl = $("#hitsLeft");
+    const hintEl = $("#hint");
+    const gridEl = $("#potsGrid");
+    const toastEl = $("#toast");
+    const btnStart = $("#btnStart");
+    const btnPlayAgain = $("#btnPlayAgain");
+    const btnMute = $("#btnMute");
+    const mulInput = $("#mulInput");
+    const rewardInfo = $("#rewardInfo");
+
+    // ====== STATE ======
+    let coins = START_COINS;
+    let hitsLeft = 0;
+    let inRound = false;
+    let roundEarned = 0;
+    let muted = false;
+
+    let multiplier = 1;
+    let pots = []; // { id, reward: number|null, broken: boolean }
+
+    // ====== AUDIO (Web Audio beeps) ======
+    let audioCtx = null;
+
+    function ensureAudio(){
+      if (muted) return null;
+      if (!audioCtx){
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (Ctx) audioCtx = new Ctx();
+      }
+      return audioCtx;
+    }
+    function resumeAudioIfNeeded(){
+      const ctx = ensureAudio();
+      if (ctx && ctx.state === "suspended") ctx.resume();
+    }
+    function beep({freq=440, dur=0.07, type="sine", gain=0.06}){
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      g.gain.setValueAtTime(gain, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      osc.connect(g); g.connect(ctx.destination);
+      osc.start(now); osc.stop(now + dur);
+    }
+    function sfxHit(){  // "cộp"
+      beep({freq:220, dur:0.07, type:"square", gain:0.045});
+      setTimeout(()=>beep({freq:140, dur:0.06, type:"triangle", gain:0.04}), 25);
+    }
+    function sfxWin(){  // "ting"
+      beep({freq:880, dur:0.06, type:"sine", gain:0.06});
+      setTimeout(()=>beep({freq:1175, dur:0.08, type:"sine", gain:0.055}), 60);
+    }
+
+    // ====== HELPERS ======
+    function randInt(min, max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+    function shuffle(arr){
+      for (let i=arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    let toastTimer = null;
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>toastEl.classList.remove("show"), 1600);
+    }
+    function setHint(msg){ hintEl.textContent = msg; }
+
+    // ====== Multiplier math ======
+    function clampMultiplier(n){
+      if (!Number.isFinite(n)) return 1;
+      n = Math.floor(n);
+      if (n < 1) n = 1;
+      if (n > 9999) n = 9999;
+      return n;
+    }
+    function getCost(){ return BASE_COST * multiplier; }
+    function getRewardMin(){ return BASE_REWARD_MIN * multiplier; }
+    function getRewardMax(){ return BASE_REWARD_MAX * multiplier; }
+
+    function syncUI(){
+      coinsEl.textContent = String(coins);
+      hitsLeftEl.textContent = String(hitsLeft);
+      feeLabelEl.textContent = String(getCost());
+      rewardInfo.textContent = `Thưởng: ${getRewardMin()}–${getRewardMax()}`;
+      btnStart.textContent = `Bắt đầu ván (${getCost()} xu)`;
+      btnPlayAgain.textContent = `Chơi ván mới (${getCost()} xu)`;
+
+      btnStart.disabled = inRound;
+      btnPlayAgain.disabled = inRound;
+      mulInput.disabled = inRound; // đang trong ván thì khóa hệ số
+    }
+
+    // ====== GAME ======
+    function buildPotsForNewRound(){
+      const rewards = [];
+      for (let i=0;i<REWARD_POTS;i++) rewards.push(randInt(getRewardMin(), getRewardMax()));
+      for (let i=0;i<POTS_TOTAL-REWARD_POTS;i++) rewards.push(null);
+      shuffle(rewards);
+      pots = rewards.map((r, idx)=>({ id: idx, reward: r, broken:false }));
+    }
+
+    function renderPots(){
+      gridEl.innerHTML = "";
+      for (const p of pots){
+        const btn = document.createElement("button");
+        btn.className = "pot";
+        btn.type = "button";
+        btn.dataset.id = String(p.id);
+
+        btn.disabled = !inRound;
+
+        btn.innerHTML = `
+          <div class="crack" aria-hidden="true"></div>
+          <div class="coin-fly" aria-hidden="true">🪙</div>
+          <div class="emoji" aria-hidden="true">🏺</div>
+          <div class="sub">${inRound ? "Bấm để đập!" : "Chưa vào ván"}</div>
+        `;
+        btn.addEventListener("click", () => hitPot(p.id));
+        gridEl.appendChild(btn);
+      }
+    }
+
+    function resetToStart(message){
+      coins = START_COINS;
+      hitsLeft = 0;
+      inRound = false;
+      roundEarned = 0;
+
+      pots = Array.from({length:POTS_TOTAL}, (_,i)=>({ id:i, reward:null, broken:false }));
+
+      syncUI();
+      renderPots();
+      setHint("Nhập hệ số → bấm “Bắt đầu ván” để trừ phí và nhận 3 lượt đập.");
+      if (message) showToast(message);
+    }
+
+    // CHỈ RESET KHI coins < 25
+    function maybeResetIfBelow25(){
+      if (coins < BASE_COST){
+        showToast("Bạn đã hết xu (<25). Reset về 100 xu!");
+        setHint("Xu < 25 nên reset về 100, quay về trạng thái ban đầu.");
+        setTimeout(()=>resetToStart("Đã reset về 100 xu!"), 650);
+        return true;
+      }
+      return false;
+    }
+
+    function startRound(){
+      // nếu <25 thì reset
+      if (maybeResetIfBelow25()) return;
+
+      const cost = getCost();
+
+      // nếu >=25 nhưng không đủ theo hệ số => không reset, chỉ báo
+      if (coins < cost){
+        showToast(`Không đủ xu cho x${multiplier} (cần ${cost} xu).`);
+        setHint(`Bạn có ${coins} xu, không đủ phí ${cost}. Hãy giảm hệ số.`);
+        return;
+      }
+
+      coins -= cost;
+      inRound = true;
+      hitsLeft = HITS_PER_ROUND;
+      roundEarned = 0;
+
+      buildPotsForNewRound();
+      syncUI();
+      renderPots();
+      setHint(`Vào ván x${multiplier}! Bạn có 3 lượt đập. Thưởng: ${getRewardMin()}–${getRewardMax()} xu.`);
+      showToast(`Vào ván x${multiplier}! Trừ ${cost} xu ✅`);
+    }
+
+    function endRound(){
+      inRound = false;
+      // khóa hết niêu
+      gridEl.querySelectorAll(".pot").forEach(b=>b.disabled = true);
+
+      showToast(`Bạn đập được tổng cộng: ${roundEarned} xu`);
+      setHint(`Kết thúc ván! Bạn đập được: ${roundEarned} xu. Bấm “Chơi ván mới”.`);
+      syncUI();
+
+      // sau ván: chỉ reset nếu coins < 25
+      maybeResetIfBelow25();
+    }
+
+    function hitPot(id){
+      if (!inRound) return;
+      if (hitsLeft <= 0) return;
+
+      const pot = pots.find(x=>x.id===id);
+      if (!pot || pot.broken) return;
+
+      pot.broken = true;
+      hitsLeft -= 1;
+      syncUI();
+
+      const btn = gridEl.querySelector(`.pot[data-id="${id}"]`);
+      if (!btn) return;
+
+      btn.classList.add("broken");
+      btn.disabled = true;
+
+      const sub = btn.querySelector(".sub");
+      sfxHit();
+
+      if (pot.reward != null){
+        coins += pot.reward;
+        roundEarned += pot.reward;
+
+        btn.classList.add("won");
+        if (sub) sub.textContent = `+${pot.reward} xu!`;
+        sfxWin();
+        showToast(`Trúng ${pot.reward} xu 🪙`);
+      } else {
+        if (sub) sub.textContent = "há há xui nha mạy";
+        showToast("há há xui nha mạy 😭");
+      }
+
+      syncUI();
+
+      if (hitsLeft === 0) endRound();
+    }
+
+    // ====== EVENTS ======
+    btnStart.addEventListener("click", () => {
+      resumeAudioIfNeeded();
+      startRound();
+    });
+
+    btnPlayAgain.addEventListener("click", () => {
+      resumeAudioIfNeeded();
+      startRound();
+    });
+
+    btnMute.addEventListener("click", () => {
+      muted = !muted;
+      btnMute.setAttribute("aria-pressed", muted ? "true" : "false");
+      btnMute.textContent = muted ? "🔇 Tắt âm" : "🔊 Âm thanh";
+      showToast(muted ? "Đã tắt âm" : "Đã bật âm");
+    });
+
+    // hệ số nhập tự do (xóa/nhập thoải mái)
+    mulInput.addEventListener("input", () => {
+      if (inRound) return;
+
+      const raw = mulInput.value.replace(/[^\d]/g, "");
+      // cho phép rỗng lúc đang xóa
+      if (raw === ""){
+        multiplier = 1;
+        syncUI();
+        setHint("Nhập hệ số (>=1). Đang tạm tính x1.");
+        return;
+      }
+      mulInput.value = raw;
+      multiplier = clampMultiplier(Number(raw));
+      syncUI();
+      setHint(`Hệ số hiện tại: x${multiplier}. Phí ván: ${getCost()} xu. Thưởng: ${getRewardMin()}–${getRewardMax()} xu.`);
+    });
+
+    // ====== INIT ======
+    resetToStart();
+    syncUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1355 @@
+﻿
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>XÌ DÁCH VIỆT NAM – TẾT (1 file)</title>
+  <style>
+    :root{
+      --bg1:#4a0a13;
+      --bg2:#7a1018;
+      --stroke:#ffffff26;
+      --text:#fff6e6;
+      --gold:#ffcf5a;
+      --gold2:#ffb703;
+      --green:#4ade80;
+      --red:#ff5c6c;
+      --shadow: 0 16px 40px rgba(0,0,0,.35);
+      --radius: 22px;
+
+      /* FIX: nền thống nhất (đỡ bị chia lớp) */
+      --glass-1: rgba(0,0,0,.18);
+      --glass-2: rgba(255,255,255,.08);
+      --ring: rgba(255,207,90,.40);
+      --boardSolid: rgba(0,0,0,.22);
+      --panelSolid: rgba(0,0,0,.18);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(255,199,75,.22), transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, rgba(255,97,132,.20), transparent 60%),
+        linear-gradient(180deg, var(--bg2), var(--bg1) 75%);
+      overflow-x:hidden;
+    }
+
+    /* Pattern */
+    body:before{
+      content:"";
+      position:fixed; inset:-60px;
+      pointer-events:none;
+      opacity:.35;
+      background:
+        radial-gradient(circle at 12px 12px, rgba(255,216,128,.18) 0 2px, transparent 3px) 0 0/48px 48px,
+        radial-gradient(circle at 36px 20px, rgba(255,162,197,.14) 0 2px, transparent 3px) 0 0/56px 56px,
+        radial-gradient(40px 20px at 30px 18px, rgba(255,255,255,.12) 0 30%, transparent 31% 100%) 0 0/160px 110px,
+        radial-gradient(46px 22px at 78px 48px, rgba(255,255,255,.10) 0 28%, transparent 29% 100%) 0 0/170px 120px;
+      filter: blur(.2px);
+      transform: rotate(-2deg);
+    }
+
+    /* FX */
+    .fx-layer{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
+    }
+    .fx{
+      position:absolute;
+      top:-12vh;
+      width:16px; height:16px;
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #fff7cf, #ffcc4d 55%, #c57a00 100%);
+      box-shadow: 0 6px 14px rgba(0,0,0,.25);
+      opacity:.9;
+      animation: fall linear forwards;
+    }
+    .petal{
+      width:14px; height:10px;
+      border-radius: 80% 30% 80% 30%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.6), rgba(255,160,190,.85) 55%, rgba(255,80,140,.65) 100%);
+      box-shadow: 0 8px 14px rgba(0,0,0,.18);
+      transform: rotate(20deg);
+      animation-name: fallPetal;
+    }
+    @keyframes fall{ to{ transform: translateY(120vh) rotate(720deg); opacity:.0 } }
+    @keyframes fallPetal{
+      0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:.95 }
+      100%{ transform: translateY(120vh) translateX(80px) rotate(420deg); opacity:0 }
+    }
+
+    .app{
+      position:relative;
+      z-index:1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 14px 16px;
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+    .logo{
+      width:44px; height:44px;
+      border-radius: 14px;
+      display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.24), rgba(255,190,78,.10));
+      border:1px solid rgba(255,255,255,.22);
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      font-size: 22px;
+    }
+    .brand h1{ margin:0; font-size: 16px; letter-spacing:.6px; line-height:1.1; }
+    .brand .sub{ font-size: 12px; color: rgba(255,246,230,.85); margin-top: 2px; }
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .chip{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.16);
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      min-height: 40px;
+    }
+    .chip label{ font-size:12px; color: rgba(255,246,230,.9); white-space:nowrap; }
+    .chip input{
+      width:88px;
+      padding:8px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: var(--text);
+      outline:none;
+    }
+    .chip input:focus{
+      border-color: rgba(255,207,90,.65);
+      box-shadow: 0 0 0 3px rgba(255,207,90,.18);
+    }
+
+    /* HUD nổi bật */
+    .chip.hero{
+      background: linear-gradient(180deg, rgba(255,207,90,.22), rgba(0,0,0,.18));
+      border-color: rgba(255,207,90,.38);
+      box-shadow: 0 12px 26px rgba(0,0,0,.22), 0 0 0 6px rgba(255,207,90,.10) inset;
+    }
+    .chip.hero .big{
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color: #fff;
+    }
+    .chip.hero .big b{
+      color: #fff;
+      text-shadow: 0 6px 14px rgba(0,0,0,.25);
+    }
+    .chip.hero .mini{
+      font-size: 11px;
+      color: rgba(255,246,230,.90);
+    }
+
+    .btn{
+      appearance:none;
+      border:0;
+      cursor:pointer;
+      padding: 10px 12px;
+      border-radius: 16px;
+      color: #2a1200;
+      font-weight: 800;
+      letter-spacing:.2px;
+      background: linear-gradient(180deg, #ffe08a, #ffb703);
+      box-shadow: 0 12px 22px rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.25);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.02) }
+    .btn:active{ transform: translateY(0px) scale(.99) }
+    .btn.secondary{
+      color: var(--text);
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.20);
+    }
+    .btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.16);
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      user-select:none;
+      cursor:pointer;
+    }
+    .toggle .dot{
+      width:34px; height:20px;
+      background: rgba(255,255,255,.18);
+      border-radius:999px;
+      position:relative;
+      border:1px solid rgba(255,255,255,.20);
+    }
+    .toggle .dot:after{
+      content:"";
+      position:absolute;
+      top:2px; left:2px;
+      width:16px; height:16px;
+      border-radius:999px;
+      background: rgba(255,255,255,.9);
+      transition: left .16s ease, background .16s ease;
+    }
+    .toggle.on .dot{
+      background: rgba(34,197,94,.25);
+      border-color: rgba(34,197,94,.45);
+    }
+    .toggle.on .dot:after{ left: 16px; background: #eafff3; }
+    .toggle span{ font-size:12px; color: rgba(255,246,230,.92); white-space:nowrap; }
+
+    .table{ margin-top: 14px; display:grid; grid-template-columns: 1fr; gap: 12px; }
+
+    /* FIX: board dùng 1 nền SOLID + blur => không bị “chia 2” */
+    .board{
+      position:relative;
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: var(--boardSolid);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .board-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .hint{ font-size:12px; color: rgba(255,246,230,.82); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr minmax(260px, 320px) 1fr;
+      gap: 12px;
+      align-items:stretch;
+    }
+    @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
+
+    .seat{
+      border: 1px solid rgba(255,255,255,.18);
+      background: var(--panelSolid);
+      border-radius: 18px;
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height: 180px;
+      backdrop-filter: blur(10px);
+    }
+    .seat.center{ background: rgba(0,0,0,.16); }
+
+    #seatPlayer{
+      background: linear-gradient(180deg, rgba(255,207,90,.14), rgba(0,0,0,.18));
+      border-color: var(--ring);
+      box-shadow: 0 14px 30px rgba(0,0,0,.26), 0 0 0 6px rgba(255,207,90,.08) inset;
+    }
+
+    .seat-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .seat-title .name{
+      font-weight: 900;
+      letter-spacing:.3px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,246,230,.92);
+      white-space:nowrap;
+    }
+
+    .money{
+      font-size:12px;
+      color: rgba(255,246,230,.90);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+    }
+    .pill strong{ font-weight: 950; letter-spacing:.2px; }
+    .pill.gold{
+      background: linear-gradient(180deg, rgba(255,207,90,.26), rgba(0,0,0,.10));
+      border-color: rgba(255,207,90,.45);
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+    }
+    .pill.gold strong{ color:#fff; text-shadow: 0 8px 18px rgba(0,0,0,.25); }
+
+    #seatPlayer .money{ font-size: 14px; gap: 12px; }
+    #seatPlayer .badge{
+      font-size: 12px;
+      padding: 5px 10px;
+      border-color: rgba(255,207,90,.38);
+      background: rgba(255,207,90,.12);
+    }
+    #seatPlayer .seat-title .name{ font-size: 15px; }
+
+    .score{ font-size:12px; color: rgba(255,246,230,.90); }
+    #seatPlayer .score{ font-size: 13px; }
+
+    .hand{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      align-items:flex-start;
+      min-height: 88px;
+      padding-top: 2px;
+    }
+
+    .card{
+      width: 58px;
+      height: 82px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88));
+      color:#1b1b1b;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 16px rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+      transform: translateY(0);
+      animation: pop .18s ease-out;
+    }
+    @keyframes pop{ from{ transform: translateY(6px) scale(.98); opacity:.0 } to{ transform: translateY(0) scale(1); opacity:1 } }
+    .card .corner{
+      position:absolute;
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 1.0;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:2px;
+      padding: 8px;
+      user-select:none;
+    }
+    .card .corner.br{
+      right:0; bottom:0;
+      align-items:flex-end;
+      transform: rotate(180deg);
+    }
+    .card .pip{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-size: 26px;
+      opacity:.95;
+      user-select:none;
+    }
+    .card.red{ color:#b11226 }
+    .card.black{ color:#111827 }
+
+    .card.back{
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.25), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.18), transparent 45%),
+        linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02)),
+        repeating-linear-gradient(45deg, rgba(255,207,90,.35) 0 6px, rgba(255,92,108,.22) 6px 12px);
+      border: 1px solid rgba(255,255,255,.22);
+      color: transparent;
+    }
+    .card.back:before{
+      content:"🧧";
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-size: 28px;
+      opacity:.85;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    }
+
+    /* FIX: log cũng dùng nền solid (không còn đường chia) */
+    .log{
+      margin-top: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 12px 22px rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+    }
+    .log-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .log h2{ margin:0; font-size: 13px; letter-spacing:.4px; }
+    .log .small{ font-size: 12px; color: rgba(255,246,230,.82); }
+    .log-list{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      max-height: 170px;
+      overflow:auto;
+      padding-right: 4px;
+    }
+    .msg{
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+    .msg.win{ border-color: rgba(74,222,128,.35); background: rgba(74,222,128,.10) }
+    .msg.lose{ border-color: rgba(255,92,108,.35); background: rgba(255,92,108,.10) }
+    .msg.push{ border-color: rgba(255,207,90,.35); background: rgba(255,207,90,.10) }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      top:14px;
+      transform: translateX(-50%);
+      z-index: 99;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.20);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      font-size: 12px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      max-width: min(560px, calc(100vw - 20px));
+      text-align:center;
+      color: rgba(255,246,230,.95);
+    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(2px); }
+
+    .seat.win{ outline: 2px solid rgba(74,222,128,.55); box-shadow: 0 0 0 6px rgba(74,222,128,.12) inset }
+    .seat.lose{ outline: 2px solid rgba(255,92,108,.55); box-shadow: 0 0 0 6px rgba(255,92,108,.12) inset }
+    .seat.push{ outline: 2px solid rgba(255,207,90,.55); box-shadow: 0 0 0 6px rgba(255,207,90,.12) inset }
+
+    .sparkle{
+      position:absolute;
+      right:12px;
+      top:12px;
+      opacity:.8;
+      font-size: 18px;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.22));
+      animation: twinkle 1.4s ease-in-out infinite;
+    }
+    @keyframes twinkle{
+      0%,100%{ transform: rotate(0deg) scale(1); opacity:.75}
+      50%{ transform: rotate(6deg) scale(1.08); opacity:1}
+    }
+  </style>
+</head>
+<body>
+  <div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">🀄</div>
+        <div>
+          <h1>XÌ DÁCH VIỆT NAM – TẾT</h1>
+          <div class="sub">1 người chơi • 2 AI • 1 nhà cái (úp bài) • AA = 21</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="chip hero" title="Quỹ và cược của bạn">
+          <div>
+            <div class="mini">🧑 Quỹ hiện có</div>
+            <div class="big"><b id="hudBank">10</b> xu</div>
+          </div>
+          <div style="width:1px;height:28px;background:rgba(255,255,255,.18);margin:0 8px"></div>
+          <div>
+            <div class="mini">🎯 Cược ván này</div>
+            <div class="big"><b id="hudBet">0</b> xu</div>
+          </div>
+        </div>
+
+        <div class="chip" title="Nhập xu cược (min 1, max bằng số xu bạn có)">
+          <label for="betInput">Cược (xu)</label>
+          <input id="betInput" type="number" min="1" step="1" value="1" />
+        </div>
+
+        <a class="btn secondary" href="../trangchur.html#games">↩ Về trang chủ</a>
+        <button class="btn" id="dealBtn">🧧 Chia bài</button>
+        <button class="btn secondary" id="hitBtn" disabled>🃏 Rút</button>
+        <button class="btn secondary" id="standBtn" disabled>✋ Dừng</button>
+        <button class="btn secondary" id="newRoundBtn" disabled>🔁 Ván mới</button>
+
+        <div class="toggle on" id="soundToggle" title="Bật/tắt âm thanh">
+          <div class="dot" aria-hidden="true"></div>
+          <span>Âm thanh: <b id="soundLabel">ON</b></span>
+        </div>
+      </div>
+    </header>
+
+    <main class="table">
+      <section class="board">
+        <div class="sparkle" aria-hidden="true">✨</div>
+        <div class="board-header">
+          <div>
+            <div style="font-weight:900;letter-spacing:.3px">Bàn chơi</div>
+            <div class="hint">Nhà cái úp hết bài đến lượt nhà cái. AI tự rút đến ≥ 16. Dealer rút với delay.</div>
+          </div>
+          <div class="hint" id="phaseLabel">Trạng thái: Chưa chia bài</div>
+        </div>
+
+        <div class="grid">
+          <div class="seat" id="seatAI1">
+            <div class="seat-title">
+              <div class="name">🤖 AI 1 <span class="badge" id="ai1State">Đợi</span></div>
+              <div class="badge">Pot: <b id="ai1Pot">0</b></div>
+            </div>
+            <div class="money">
+              <span class="pill"><span>Xu:</span> <strong id="ai1Bank">10</strong></span>
+              <span class="pill"><span>Cược:</span> <strong id="ai1Bet">0</strong></span>
+            </div>
+            <div class="score">Điểm: <b id="ai1Score">—</b></div>
+            <div class="hand" id="ai1Hand"></div>
+          </div>
+
+          <div class="seat center" id="seatDealer">
+            <div class="seat-title">
+              <div class="name">🧧 Nhà cái <span class="badge" id="dealerState">Úp bài</span></div>
+              <div class="badge">Pot: <b id="dealerPot">—</b></div>
+            </div>
+            <div class="money">
+              <span class="pill"><span>Xu:</span> <strong id="dealerBank">∞</strong></span>
+              <span class="pill">Dealer không cần quỹ</span>
+            </div>
+            <div class="score">Điểm: <b id="dealerScore">??</b></div>
+            <div class="hand" id="dealerHand"></div>
+          </div>
+
+          <div class="seat" id="seatAI2">
+            <div class="seat-title">
+              <div class="name">🤖 AI 2 <span class="badge" id="ai2State">Đợi</span></div>
+              <div class="badge">Pot: <b id="ai2Pot">0</b></div>
+            </div>
+            <div class="money">
+              <span class="pill"><span>Xu:</span> <strong id="ai2Bank">10</strong></span>
+              <span class="pill"><span>Cược:</span> <strong id="ai2Bet">0</strong></span>
+            </div>
+            <div class="score">Điểm: <b id="ai2Score">—</b></div>
+            <div class="hand" id="ai2Hand"></div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+        <div class="seat" id="seatPlayer">
+          <div class="seat-title">
+            <div class="name">🧑 Bạn <span class="badge" id="playerState">Sẵn sàng</span></div>
+            <div class="badge">Pot: <b id="playerPot">0</b></div>
+          </div>
+
+          <div class="money">
+            <span class="pill gold">🪙 Quỹ hiện có: <strong id="playerBank">10</strong> xu</span>
+            <span class="pill gold">🎯 Cược ván này: <strong id="playerBet">0</strong> xu</span>
+          </div>
+
+          <div class="score">Điểm: <b id="playerScore">—</b></div>
+          <div class="hand" id="playerHand"></div>
+        </div>
+
+        <div class="log">
+          <div class="log-head">
+            <h2>📣 Thông báo ván</h2>
+            <!-- đổi “Mẹo” thành text khác -->
+            <div class="small">LƯU Ý: Nếu quỹ bạn về 0 → reset cả game</div>
+          </div>
+          <div class="log-list" id="logList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    /**********************
+     * XÌ DÁCH TẾT — 1 FILE
+     **********************/
+
+    // ======= LocalStorage Keys (lưu xu khi out game) =======
+    const LS_KEY_BANK = "xidach_tet_player_bank_v1";
+
+    // ======= Config =======
+    const DEALER_STAND_ON = 16;
+    const AI_STAND_ON = 16;
+    const DEALER_DRAW_DELAY_MIN = 500;
+    const DEALER_DRAW_DELAY_MAX = 800;
+
+    // ======= State =======
+    const SUITS = [
+      { s: "♠", color: "black" },
+      { s: "♥", color: "red" },
+      { s: "♦", color: "red" },
+      { s: "♣", color: "black" }
+    ];
+    const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+
+    const game = {
+      deck: [],
+      phase: "idle",
+      soundOn: true,
+      fxTimer: null,
+      dealerHidden: true,
+      players: {}
+    };
+
+    const players = {
+      player: { id:"player", name:"Bạn", bank:10, bet:0, pot:0, hand:[], state:"Sẵn sàng", busted:false, stood:false, isHuman:true },
+      ai1:    { id:"ai1", name:"AI 1", bank:10, bet:0, pot:0, hand:[], state:"Đợi", busted:false, stood:false, isHuman:false },
+      ai2:    { id:"ai2", name:"AI 2", bank:10, bet:0, pot:0, hand:[], state:"Đợi", busted:false, stood:false, isHuman:false },
+      dealer: { id:"dealer", name:"Nhà cái", bank:Infinity, bet:0, pot:0, hand:[], state:"Úp bài", busted:false, stood:false, isHuman:false }
+    };
+    game.players = players;
+
+    // ======= DOM =======
+    const el = {
+      fxLayer: document.getElementById("fxLayer"),
+      toast: document.getElementById("toast"),
+      phaseLabel: document.getElementById("phaseLabel"),
+
+      betInput: document.getElementById("betInput"),
+      dealBtn: document.getElementById("dealBtn"),
+      hitBtn: document.getElementById("hitBtn"),
+      standBtn: document.getElementById("standBtn"),
+      newRoundBtn: document.getElementById("newRoundBtn"),
+
+      soundToggle: document.getElementById("soundToggle"),
+      soundLabel: document.getElementById("soundLabel"),
+
+      logList: document.getElementById("logList"),
+
+      seatPlayer: document.getElementById("seatPlayer"),
+      seatAI1: document.getElementById("seatAI1"),
+      seatAI2: document.getElementById("seatAI2"),
+      seatDealer: document.getElementById("seatDealer"),
+
+      playerHand: document.getElementById("playerHand"),
+      ai1Hand: document.getElementById("ai1Hand"),
+      ai2Hand: document.getElementById("ai2Hand"),
+      dealerHand: document.getElementById("dealerHand"),
+
+      playerBank: document.getElementById("playerBank"),
+      ai1Bank: document.getElementById("ai1Bank"),
+      ai2Bank: document.getElementById("ai2Bank"),
+      dealerBank: document.getElementById("dealerBank"),
+
+      playerBet: document.getElementById("playerBet"),
+      ai1Bet: document.getElementById("ai1Bet"),
+      ai2Bet: document.getElementById("ai2Bet"),
+
+      playerPot: document.getElementById("playerPot"),
+      ai1Pot: document.getElementById("ai1Pot"),
+      ai2Pot: document.getElementById("ai2Pot"),
+
+      playerScore: document.getElementById("playerScore"),
+      ai1Score: document.getElementById("ai1Score"),
+      ai2Score: document.getElementById("ai2Score"),
+      dealerScore: document.getElementById("dealerScore"),
+
+      playerState: document.getElementById("playerState"),
+      ai1State: document.getElementById("ai1State"),
+      ai2State: document.getElementById("ai2State"),
+      dealerState: document.getElementById("dealerState"),
+
+      hudBank: document.getElementById("hudBank"),
+      hudBet: document.getElementById("hudBet"),
+    };
+
+    // ======= Persist helpers =======
+    function loadPersist(){
+      const raw = localStorage.getItem(LS_KEY_BANK);
+      if(raw == null) return;
+      const v = parseInt(raw, 10);
+      if(Number.isFinite(v) && v >= 0){
+        players.player.bank = v;
+      }
+    }
+    function savePersist(){
+      // chỉ lưu quỹ của bạn
+      localStorage.setItem(LS_KEY_BANK, String(players.player.bank));
+    }
+    function clearPersist(){
+      localStorage.removeItem(LS_KEY_BANK);
+    }
+
+    // ======= Audio =======
+    let audioCtx = null;
+    function ensureAudio(){
+      if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if(audioCtx.state === "suspended"){
+        audioCtx.resume().catch(()=>{});
+      }
+    }
+    function beep(type="tap"){
+      if(!game.soundOn) return;
+      try{
+        ensureAudio();
+        const now = audioCtx.currentTime;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(1400, now);
+
+        let f1 = 420, f2 = 780, dur = 0.08;
+        if(type === "deal"){ f1 = 520; f2 = 980; dur = 0.10; }
+        if(type === "draw"){ f1 = 700; f2 = 520; dur = 0.09; }
+        if(type === "win"){ f1 = 660; f2 = 990; dur = 0.14; }
+        if(type === "lose"){ f1 = 240; f2 = 170; dur = 0.16; }
+        if(type === "push"){ f1 = 420; f2 = 420; dur = 0.12; }
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(f1, now);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(40,f2), now + dur);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.12, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + dur + 0.02);
+      }catch(e){}
+    }
+
+    // ======= FX =======
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+    function spawnFX(){
+      const isCoin = Math.random() < 0.65;
+      const d = document.createElement("div");
+      d.className = "fx" + (isCoin ? "" : " petal");
+      d.style.left = rand(0, 100) + "vw";
+      d.style.animationDuration = rand(4.5, 8.5) + "s";
+      d.style.opacity = rand(0.35, 0.95);
+      d.style.transform = `translateY(0) rotate(${rand(0,180)}deg)`;
+      d.style.filter = `blur(${rand(0, .25)}px)`;
+      el.fxLayer.appendChild(d);
+      setTimeout(()=> d.remove(), 9000);
+    }
+    function startFX(){
+      stopFX();
+      game.fxTimer = setInterval(()=>{
+        const burst = (game.phase === "roundOver") ? 3 : 1;
+        for(let i=0;i<burst;i++) spawnFX();
+      }, 260);
+    }
+    function stopFX(){
+      if(game.fxTimer) clearInterval(game.fxTimer);
+      game.fxTimer = null;
+    }
+
+    // ======= UI =======
+    function addLog(text, kind=""){
+      const div = document.createElement("div");
+      div.className = "msg" + (kind ? " " + kind : "");
+      div.textContent = text;
+      el.logList.prepend(div);
+    }
+    let toastTimer = null;
+    function showToast(text){
+      el.toast.textContent = text;
+      el.toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> el.toast.classList.remove("show"), 1400);
+    }
+    function setPhaseLabel(text){
+      el.phaseLabel.textContent = "Trạng thái: " + text;
+    }
+    function clearSeatHighlights(){
+      el.seatPlayer.classList.remove("win","lose","push");
+      el.seatAI1.classList.remove("win","lose","push");
+      el.seatAI2.classList.remove("win","lose","push");
+      el.seatDealer.classList.remove("win","lose","push");
+    }
+
+    // ======= Deck =======
+    function createDeck(){
+      const deck = [];
+      for(const r of RANKS){
+        for(const su of SUITS){
+          deck.push({ rank:r, suit:su.s, color: su.color });
+        }
+      }
+      return deck;
+    }
+    function shuffleDeck(deck){
+      for(let i = deck.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    }
+    function drawCard(){
+      if(game.deck.length === 0){
+        game.deck = shuffleDeck(createDeck());
+      }
+      return game.deck.pop();
+    }
+    function cardToString(c){ return `${c.rank}${c.suit}`; }
+
+    // ======= Score =======
+    function scoreHand(hand){
+      if(hand.length === 2 && hand[0].rank === "A" && hand[1].rank === "A"){
+        return { score: 21, soft: false, isAA21: true };
+      }
+      let total = 0;
+      let aces = 0;
+      for(const c of hand){
+        if(c.rank === "A"){ aces += 1; total += 1; }
+        else if(["J","Q","K"].includes(c.rank)){ total += 10; }
+        else { total += parseInt(c.rank, 10); }
+      }
+      let soft = false;
+      while(aces > 0 && total + 10 <= 21){
+        total += 10;
+        aces -= 1;
+        soft = true;
+      }
+      return { score: total, soft, isAA21:false };
+    }
+    function isBust(hand){ return scoreHand(hand).score > 21; }
+
+    // ======= Render =======
+    function renderCard(c, faceDown=false){
+      const div = document.createElement("div");
+      div.className = "card" + (faceDown ? " back" : (" " + (c.color === "red" ? "red":"black")));
+      if(faceDown) return div;
+
+      const tl = document.createElement("div");
+      tl.className = "corner tl";
+      tl.innerHTML = `<div>${c.rank}</div><div>${c.suit}</div>`;
+
+      const br = document.createElement("div");
+      br.className = "corner br";
+      br.innerHTML = `<div>${c.rank}</div><div>${c.suit}</div>`;
+
+      const pip = document.createElement("div");
+      pip.className = "pip";
+      pip.textContent = c.suit;
+
+      div.appendChild(tl);
+      div.appendChild(pip);
+      div.appendChild(br);
+      return div;
+    }
+
+    function renderHands(){
+      el.playerHand.innerHTML = "";
+      el.ai1Hand.innerHTML = "";
+      el.ai2Hand.innerHTML = "";
+      el.dealerHand.innerHTML = "";
+
+      players.player.hand.forEach(c => el.playerHand.appendChild(renderCard(c,false)));
+      players.ai1.hand.forEach(c => el.ai1Hand.appendChild(renderCard(c,false)));
+      players.ai2.hand.forEach(c => el.ai2Hand.appendChild(renderCard(c,false)));
+
+      if(game.dealerHidden){
+        players.dealer.hand.forEach(_ => el.dealerHand.appendChild(renderCard({rank:"?",suit:"?"}, true)));
+      } else {
+        players.dealer.hand.forEach(c => el.dealerHand.appendChild(renderCard(c,false)));
+      }
+
+      el.playerScore.textContent = players.player.hand.length ? scoreHand(players.player.hand).score : "—";
+      el.ai1Score.textContent = players.ai1.hand.length ? scoreHand(players.ai1.hand).score : "—";
+      el.ai2Score.textContent = players.ai2.hand.length ? scoreHand(players.ai2.hand).score : "—";
+      el.dealerScore.textContent = players.dealer.hand.length ? (game.dealerHidden ? "??" : scoreHand(players.dealer.hand).score) : "—";
+
+      el.playerBank.textContent = players.player.bank;
+      el.ai1Bank.textContent = players.ai1.bank;
+      el.ai2Bank.textContent = players.ai2.bank;
+
+      el.playerBet.textContent = players.player.bet;
+      el.ai1Bet.textContent = players.ai1.bet;
+      el.ai2Bet.textContent = players.ai2.bet;
+
+      el.playerPot.textContent = players.player.pot;
+      el.ai1Pot.textContent = players.ai1.pot;
+      el.ai2Pot.textContent = players.ai2.pot;
+
+      el.playerState.textContent = players.player.state;
+      el.ai1State.textContent = players.ai1.state;
+      el.ai2State.textContent = players.ai2.state;
+      el.dealerState.textContent = players.dealer.state;
+
+      el.hudBank.textContent = players.player.bank;
+      el.hudBet.textContent = players.player.bet;
+
+      // mỗi lần render là lưu luôn (an toàn + đơn giản)
+      savePersist();
+    }
+
+    function setButtons({deal, hit, stand, newRound}){
+      el.dealBtn.disabled = !deal;
+      el.hitBtn.disabled = !hit;
+      el.standBtn.disabled = !stand;
+      el.newRoundBtn.disabled = !newRound;
+    }
+
+    // ======= Flow =======
+    function resetRoundState(){
+      for(const id of ["player","ai1","ai2","dealer"]){
+        players[id].hand = [];
+        players[id].bet = 0;
+        players[id].pot = 0;
+        players[id].busted = false;
+        players[id].stood = false;
+      }
+      players.player.state = "Sẵn sàng";
+      players.ai1.state = "Đợi";
+      players.ai2.state = "Đợi";
+      players.dealer.state = "Úp bài";
+      game.dealerHidden = true;
+      clearSeatHighlights();
+    }
+
+    function resetGame(reason=""){
+      players.player.bank = 10;
+      players.ai1.bank = 10;
+      players.ai2.bank = 10;
+
+      game.deck = shuffleDeck(createDeck());
+      game.phase = "idle";
+      resetRoundState();
+
+      setButtons({deal:true, hit:false, stand:false, newRound:false});
+      setPhaseLabel("Chưa chia bài");
+
+      // reset => xóa lưu để quay về 10
+      clearPersist();
+      renderHands();
+
+      if(reason){
+        showToast(reason);
+        addLog(reason, "push");
+      }
+    }
+
+    function clampBetInput(){
+      const max = players.player.bank;
+      let v = parseInt(el.betInput.value, 10);
+      if(Number.isNaN(v)) v = 1;
+      v = Math.max(1, Math.min(max, v));
+      el.betInput.value = String(v);
+      return v;
+    }
+
+    function placeBets(){
+      const pBet = clampBetInput();
+      if(players.player.bank < pBet){
+        showToast("Bạn không đủ xu để cược!");
+        addLog("Bạn không đủ xu để cược!", "lose");
+        return false;
+      }
+
+      const aiBet = (ai) => {
+        if(ai.bank <= 0) return 0;
+        const b = Math.min(ai.bank, Math.floor(rand(1,4)));
+        return Math.max(1, b);
+      };
+
+      players.player.bet = pBet;
+      players.ai1.bet = aiBet(players.ai1);
+      players.ai2.bet = aiBet(players.ai2);
+
+      for(const id of ["player","ai1","ai2"]){
+        const pl = players[id];
+        pl.bank -= pl.bet;
+        pl.pot = pl.bet;
+      }
+
+      addLog(`Bạn cược ${players.player.bet} xu. AI1 cược ${players.ai1.bet} xu. AI2 cược ${players.ai2.bet} xu.`, "");
+      return true;
+    }
+
+    function dealInitial(){
+      for(let i=0;i<2;i++){
+        players.player.hand.push(drawCard());
+        players.ai1.hand.push(drawCard());
+        players.ai2.hand.push(drawCard());
+        players.dealer.hand.push(drawCard());
+      }
+      beep("deal");
+      addLog("Chia bài xong! Nhà cái úp bài. Bạn và AI thấy bài của mình.", "");
+    }
+
+    function updateBustFlags(){
+      for(const id of ["player","ai1","ai2","dealer"]){
+        players[id].busted = isBust(players[id].hand);
+      }
+    }
+
+    function setPlayerTurn(){
+      game.phase = "playerTurn";
+      players.player.state = "Đang đánh...";
+      players.ai1.state = "Chờ lượt AI";
+      players.ai2.state = "Chờ lượt AI";
+      players.dealer.state = "Úp bài";
+      setPhaseLabel("Lượt của bạn");
+      setButtons({deal:false, hit:true, stand:true, newRound:false});
+    }
+
+    function endPlayerTurn(){
+      players.player.stood = true;
+      players.player.state = "Đã dừng";
+      setButtons({deal:false, hit:false, stand:false, newRound:false});
+    }
+
+    function playerHit(){
+      if(game.phase !== "playerTurn") return;
+      const c = drawCard();
+      players.player.hand.push(c);
+      beep("draw");
+      addLog(`Bạn rút ${cardToString(c)}`, "");
+      updateBustFlags();
+      renderHands();
+
+      if(players.player.busted){
+        players.player.state = "Quắc!";
+        addLog("Bạn bị QUẮC 😵", "lose");
+        showToast("Bạn bị QUẮC!");
+        endPlayerTurn();
+        resolveAIsThenDealer();
+      }
+    }
+
+    function playerStand(){
+      if(game.phase !== "playerTurn") return;
+      endPlayerTurn();
+      addLog("Bạn dừng lượt ✋", "");
+      showToast("Bạn dừng lượt");
+      resolveAIsThenDealer();
+    }
+
+    function randInt(min,max){ return Math.floor(rand(min, max+1)); }
+    function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+    async function aiTurn(ai){
+      ai.state = "Đang đánh...";
+      renderHands();
+      await wait(randInt(350, 650));
+
+      while(true){
+        updateBustFlags();
+        const s = scoreHand(ai.hand).score;
+        if(ai.busted){
+          ai.state = "Quắc!";
+          addLog(`${ai.name} bị QUẮC 😵`, "lose");
+          break;
+        }
+        if(s >= AI_STAND_ON){
+          ai.stood = true;
+          ai.state = `Dừng (${s})`;
+          addLog(`${ai.name} dừng ở ${s}`, "");
+          break;
+        }
+        const c = drawCard();
+        ai.hand.push(c);
+        beep("draw");
+        addLog(`${ai.name} rút ${cardToString(c)}`, "");
+        renderHands();
+        await wait(randInt(350, 650));
+      }
+      renderHands();
+      await wait(randInt(200, 420));
+    }
+
+    async function dealerTurn(){
+      game.phase = "resolving";
+      players.dealer.state = "Lật bài...";
+      game.dealerHidden = false;
+      renderHands();
+      addLog("Nhà cái lật bài!", "");
+      showToast("Nhà cái lật bài!");
+      beep("deal");
+      await wait(randInt(420, 620));
+
+      while(true){
+        updateBustFlags();
+        const s = scoreHand(players.dealer.hand).score;
+
+        if(players.dealer.busted){
+          players.dealer.state = "Quắc!";
+          addLog("Nhà cái bị QUẮC 🎉", "win");
+          break;
+        }
+        if(s >= DEALER_STAND_ON){
+          players.dealer.stood = true;
+          players.dealer.state = `Dừng (${s})`;
+          addLog(`Nhà cái dừng ở ${s}`, "");
+          break;
+        }
+
+        players.dealer.state = "Rút thêm...";
+        renderHands();
+
+        const c = drawCard();
+        players.dealer.hand.push(c);
+        beep("draw");
+        addLog(`Nhà cái rút ${cardToString(c)}`, "");
+        renderHands();
+
+        await wait(randInt(DEALER_DRAW_DELAY_MIN, DEALER_DRAW_DELAY_MAX));
+      }
+
+      renderHands();
+      await wait(randInt(350, 600));
+    }
+
+    function settleRound(){
+      game.phase = "roundOver";
+      setPhaseLabel("Kết thúc ván");
+      players.player.state = players.player.busted ? "Quắc!" : (players.player.stood ? "Đã dừng" : players.player.state);
+
+      const dealer = players.dealer;
+      const dealerScore = scoreHand(dealer.hand).score;
+      const dealerBust = dealer.busted;
+
+      clearSeatHighlights();
+      const outcomes = [];
+
+      for(const id of ["player","ai1","ai2"]){
+        const pl = players[id];
+        const seatEl = (id==="player") ? el.seatPlayer : (id==="ai1") ? el.seatAI1 : el.seatAI2;
+        const pot = pl.pot;
+        if(pot <= 0){ outcomes.push({id, result:"skip"}); continue; }
+
+        const pScore = scoreHand(pl.hand).score;
+        const pBust = pl.busted;
+
+        let result = "lose";
+        if(pBust) result = "lose";
+        else if(dealerBust) result = "win";
+        else if(pScore > dealerScore) result = "win";
+        else if(pScore < dealerScore) result = "lose";
+        else result = "push";
+
+        if(result === "win"){
+          pl.bank += (pot * 2);
+          seatEl.classList.add("win");
+          outcomes.push({id, result:"win"});
+          addLog(`${pl.name} thắng +${pot} xu ✅`, "win");
+        } else if(result === "push"){
+          pl.bank += pot;
+          seatEl.classList.add("push");
+          outcomes.push({id, result:"push"});
+          addLog(`${pl.name} hòa — trả lại ${pot} xu 🤝`, "push");
+        } else {
+          seatEl.classList.add("lose");
+          outcomes.push({id, result:"lose"});
+          addLog(`${pl.name} thua -${pot} xu ❌`, "lose");
+        }
+
+        pl.bet = 0;
+        pl.pot = 0;
+      }
+
+      el.seatDealer.classList.add(dealerBust ? "lose" : "push");
+
+      renderHands();
+
+      const playerOutcome = outcomes.find(o => o.id === "player");
+      if(playerOutcome){
+        if(playerOutcome.result === "win") beep("win");
+        else if(playerOutcome.result === "lose") beep("lose");
+        else beep("push");
+      }
+
+      setButtons({deal:false, hit:false, stand:false, newRound:true});
+      resetGameIfBankrupt();
+    }
+
+    function resetGameIfBankrupt(){
+      if(players.player.bank <= 0){
+        resetGame("Hết xu! Reset game về 10 xu 🧧");
+      }
+    }
+
+    async function resolveAIsThenDealer(){
+      if(game.phase === "resolving" || game.phase === "roundOver") return;
+      game.phase = "resolving";
+      setPhaseLabel("AI đang đánh...");
+      players.ai1.state = "Đang đánh...";
+      players.ai2.state = "Đang đánh...";
+      players.dealer.state = "Úp bài";
+      renderHands();
+
+      await aiTurn(players.ai1);
+      await aiTurn(players.ai2);
+      await dealerTurn();
+      settleRound();
+    }
+
+    function newRound(){
+      if(game.phase !== "roundOver") return;
+      resetRoundState();
+      game.phase = "idle";
+      setPhaseLabel("Chưa chia bài");
+      setButtons({deal:true, hit:false, stand:false, newRound:false});
+      renderHands();
+      addLog("Bắt đầu ván mới 🔁", "");
+      showToast("Ván mới!");
+    }
+
+    function deal(){
+      if(game.phase !== "idle") return;
+
+      clearSeatHighlights();
+      const bet = clampBetInput();
+
+      if(players.player.bank <= 0){
+        resetGame("Hết xu! Reset game về 10 xu 🧧");
+        return;
+      }
+      if(bet < 1){
+        showToast("Cược tối thiểu là 1 xu.");
+        return;
+      }
+      if(players.player.bank < bet){
+        showToast("Bạn không đủ xu để cược!");
+        addLog("Bạn không đủ xu để cược!", "lose");
+        return;
+      }
+
+      game.deck = shuffleDeck(createDeck());
+
+      resetRoundState();
+      players.player.state = "Đang đánh...";
+      players.ai1.state = "Đang cược...";
+      players.ai2.state = "Đang cược...";
+      players.dealer.state = "Úp bài";
+      game.dealerHidden = true;
+
+      if(!placeBets()) return;
+
+      dealInitial();
+      updateBustFlags();
+      renderHands();
+
+      setPlayerTurn();
+      showToast("Lượt của bạn! Rút hoặc Dừng.");
+    }
+
+    // ======= Events =======
+    el.dealBtn.addEventListener("click", () => { ensureAudio(); deal(); });
+    el.hitBtn.addEventListener("click", () => { ensureAudio(); playerHit(); });
+    el.standBtn.addEventListener("click", () => { ensureAudio(); playerStand(); });
+    el.newRoundBtn.addEventListener("click", () => { ensureAudio(); newRound(); });
+
+    el.betInput.addEventListener("change", clampBetInput);
+    el.betInput.addEventListener("input", () => {
+      const v = el.betInput.value.trim();
+      if(v === "") return;
+      if(!/^\d+$/.test(v)) el.betInput.value = v.replace(/[^\d]/g,"");
+    });
+
+    el.soundToggle.addEventListener("click", () => {
+      game.soundOn = !game.soundOn;
+      el.soundToggle.classList.toggle("on", game.soundOn);
+      el.soundLabel.textContent = game.soundOn ? "ON" : "OFF";
+      showToast(game.soundOn ? "Bật âm thanh 🔊" : "Tắt âm thanh 🔇");
+      if(game.soundOn) beep("tap");
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "Enter"){
+        if(!el.dealBtn.disabled) el.dealBtn.click();
+        else if(!el.hitBtn.disabled) el.hitBtn.click();
+      }
+      if(e.key.toLowerCase() === "h" && !el.hitBtn.disabled) el.hitBtn.click();
+      if(e.key.toLowerCase() === "s" && !el.standBtn.disabled) el.standBtn.click();
+      if(e.key.toLowerCase() === "r" && !el.newRoundBtn.disabled) el.newRoundBtn.click();
+    });
+
+    // ======= Init =======
+    function init(){
+      game.deck = shuffleDeck(createDeck());
+      startFX();
+      setButtons({deal:true, hit:false, stand:false, newRound:false});
+      setPhaseLabel("Chưa chia bài");
+
+      // load xu đã lưu (nếu có)
+      loadPersist();
+
+      addLog("Chào mừng đến Xì Dách Tết 🧧 Nhập cược rồi bấm “Chia bài”.", "");
+      addLog("Luật: AA = 21. A tối ưu 1/11. Xì dách không ăn thêm, chỉ hơn nhà cái mới thắng.", "");
+      renderHands();
+      clampBetInput();
+    }
+
+    init();
+  </script>
+</body>
+</html>
+
+

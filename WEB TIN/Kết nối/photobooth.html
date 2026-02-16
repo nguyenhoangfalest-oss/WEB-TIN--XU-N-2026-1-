@@ -1,0 +1,555 @@
+﻿<!doctype html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TẾTVERSE 2026</title>
+  <meta name="description" content="Tếtverse 2026 — Tết Việt, sĩ tử, cộng đồng, minigame, kết nối." />
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- Solarlunar CDN (âm lịch) -->
+  <script src="https://cdn.jsdelivr.net/npm/solarlunar@2.0.7/lib/solarlunar.min.js"></script>
+</head>
+<body>
+<!-- TET BACKGROUND LAYERS -->
+<div class="tet-bg" aria-hidden="true">
+  <div class="tet-pattern"></div>
+
+  <!-- Mai/Đào góc -->
+  <div class="tet-branch tet-branch--left"></div>
+  <div class="tet-branch tet-branch--right"></div>
+
+  <!-- Đèn lồng -->
+  <div class="tet-lantern tet-lantern--l"></div>
+  <div class="tet-lantern tet-lantern--r"></div>
+
+  <!-- Canvas hiệu ứng -->
+  <canvas id="tetFX"></canvas>
+</div>
+
+<!-- Background layers -->
+  <div class="bg-layer" aria-hidden="true"></div>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- NAVBAR -->
+  <header class="navbar" id="top">
+    <div class="container nav-inner">
+      <a class="brand" href="#home" aria-label="Tếtverse 2026">
+        <span class="brand-logo">🌸</span>
+        <span class="brand-text">TẾTVERSE 2026</span>
+      </a>
+
+      <button class="hamburger" id="hamburger" aria-label="Mở menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" id="nav">
+        <a class="navlink active" href="#home">Trang chủ</a>
+        <a class="navlink" href="#feed">Bảng tin</a>
+        <a class="navlink" href="#tetnay">Tết nay có gì</a>
+        <a class="navlink" href="#camnang">Cẩm nang Tết</a>
+        <a class="navlink" href="#games">Mini Game</a>
+        <a class="navlink" href="#ketnoi">Kết nối</a>
+        <button class="navbtn" id="authBtn" type="button">Đăng nhập/Đăng kí</button>
+      </nav>
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="left">
+            <button class="icon-btn" id="openDrawer" aria-label="Mở menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+
+          <div class="avatar" title="Tài khoản">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm7 10a7 7 0 1 0-14 0" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+      <div class="mobile-menu">
+        <a class="navlink" href="#home">Trang chủ</a>
+        <a class="navlink" href="#feed">Bảng tin</a>
+        <a class="navlink" href="#tetnay">Tết nay có gì</a>
+        <a class="navlink" href="#camnang">Cẩm nang Tết</a>
+        <a class="navlink" href="#games">Mini Game</a>
+        <a class="navlink" href="#ketnoi">Kết nối</a>
+        <button class="navbtn" id="authBtnMobile" type="button">Đăng nhập</button>
+        <div class="mobile-user" id="mobileUser" hidden>
+          <span class="user-pill" id="userPillMobile">—</span>
+          <button class="navbtn ghost" id="logoutBtnMobile" type="button">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FLOATING ACTIONS -->
+  <div class="floating-actions" aria-label="Floating actions">
+    <a class="fab fab-que" href="../Gieo quẻ/index.html" target="_blank" rel="noopener">
+      <span class="fab-ic">🧧</span>
+      <span class="fab-tx">Gieo quẻ</span>
+    </a>
+
+    <!-- Uiverse-like theme toggle -->
+    <label class="theme-toggle" title="Đổi theme">
+      <input id="themeSwitch" type="checkbox" />
+      <span class="toggle-track" aria-hidden="true">
+        <span class="toggle-thumb">
+          <span class="sun">☀</span>
+          <span class="moon">☾</span>
+        </span>
+      </span>
+    </label>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HOME -->
+    <section id="home" class="section hero">
+      <div class="container hero-grid">
+
+        <div class="card hero-card reveal">
+          <div class="chip-row">
+            <span class="chip">🌸 Tết 2026</span>
+            <span class="chip">🎓 Thi THPT 2026</span>
+            <span class="chip ghost">⚡ Realtime (demo)</span>
+          </div>
+
+          <h1 class="hero-title">Xuân đoàn viên – Tết sẻ chia – Sĩ tử vững vàng</h1>
+          <p class="hero-sub">
+            TẾTVERSE là “hub Tết” gọn đẹp: cập nhật bảng tin cộng đồng, gợi ý nội dung Tết,
+            cẩm nang lời chúc – tử vi – hợp màu, mini game, kết nối chat & photobooth (demo).
+          </p>
+
+          <div class="cta-row">
+            <a class="btn primary" href="#feed">Vào Bảng tin</a>
+            <a class="btn" href="#ketnoi">Kết nối</a>
+            <a class="btn" href="#games">Mini Game</a>
+          </div>
+
+          <div class="quick-grid">
+            <a class="quick" href="#feed">
+              <div class="quick-ic">📰</div>
+              <div>
+                <div class="quick-title">Bảng tin</div>
+                <div class="quick-sub">Đăng bài / Like / Cmt</div>
+              </div>
+            </a>
+            <a class="quick" href="#tetnay">
+              <div class="quick-ic">🎥</div>
+              <div>
+                <div class="quick-title">Tết nay có gì</div>
+                <div class="quick-sub">Phim / cổ tích / show</div>
+              </div>
+            </a>
+            <a class="quick" href="#camnang">
+              <div class="quick-ic">🌟</div>
+              <div>
+                <div class="quick-title">Cẩm nang Tết</div>
+                <div class="quick-sub">Lời chúc / hợp màu / mẹo</div>
+              </div>
+            </a>
+            <a class="quick" href="#games">
+              <div class="quick-ic">🎮</div>
+              <div>
+                <div class="quick-title">Mini Game</div>
+                <div class="quick-sub">Lô tô / cá ngựa /…</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="count-col">
+          <div class="card count-card reveal">
+            <div class="card-head">
+              <div>
+                <div class="kicker">Countdown</div>
+                <h3 class="card-title">Tết 2026</h3>
+                <div class="mini-line">
+                  <span>Hôm nay (Dương): <b id="todaySolar">—</b></span>
+                  <span>Hôm nay (Âm): <b id="todayLunar">—</b></span>
+                </div>
+              </div>
+              <span class="pill" id="tetBadge">🧨</span>
+            </div>
+
+            <div class="digits">
+              <div class="digit"><div class="num" id="tetD">0</div><div class="lab">Ngày</div></div>
+              <div class="digit"><div class="num" id="tetH">00</div><div class="lab">Giờ</div></div>
+              <div class="digit"><div class="num" id="tetM">00</div><div class="lab">Phút</div></div>
+              <div class="digit"><div class="num" id="tetS">00</div><div class="lab">Giây</div></div>
+            </div>
+
+            <div class="progress">
+              <div class="bar" id="tetBar"></div>
+            </div>
+            <div class="muted-sm">
+              Tiến độ: <b id="tetPct">0%</b> • “Chậm mà chắc, Tết vẫn tới!”
+            </div>
+          </div>
+
+          <div class="card count-card reveal">
+            <div class="card-head">
+              <div>
+                <div class="kicker">Countdown</div>
+                <h3 class="card-title">Thi THPT 2026</h3>
+                <div class="mini-line">
+                  <span>“Mỗi ngày một chút, là một bước gần hơn.”</span>
+                </div>
+              </div>
+              <span class="pill">📚</span>
+            </div>
+
+            <div class="digits">
+              <div class="digit"><div class="num" id="examD">0</div><div class="lab">Ngày</div></div>
+              <div class="digit"><div class="num" id="examH">00</div><div class="lab">Giờ</div></div>
+              <div class="digit"><div class="num" id="examM">00</div><div class="lab">Phút</div></div>
+              <div class="digit"><div class="num" id="examS">00</div><div class="lab">Giây</div></div>
+            </div>
+
+            <div class="progress">
+              <div class="bar" id="examBar"></div>
+            </div>
+            <div class="muted-sm">
+              Tiến độ: <b id="examPct">0%</b> • <span id="examMotivation">Bạn đang làm tốt!</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FEED -->
+    <section id="feed" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2 class="section-title">BẢNG TIN CỘNG ĐỒNG</h2>
+          <p class="section-sub">Đăng/like/comment yêu cầu đăng nhập (demo localStorage).</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card composer reveal">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Đăng bài</h3>
+                <div class="mini">Chia sẻ không khí Tết / tips ôn thi / lời chúc…</div>
+              </div>
+              <span class="pill">✍️</span>
+            </div>
+
+            <textarea id="postText" class="textarea" placeholder="Hôm nay bạn muốn chia sẻ gì?"></textarea>
+
+            <div class="row">
+              <label class="file-btn">
+                <input id="postImage" type="file" accept="image/*" />
+                <span>📷 Upload ảnh (demo)</span>
+              </label>
+              <button id="postBtn" class="btn primary" type="button">Đăng</button>
+            </div>
+
+            <div class="hint" id="composerHint">Bạn cần đăng nhập để đăng bài.</div>
+          </div>
+
+          <div class="card reveal">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Điểm danh</h3>
+                <div class="mini">Ai đang online “Tếtverse” hôm nay?</div>
+              </div>
+              <span class="pill">🟢</span>
+            </div>
+
+            <div class="list" id="onlineList"></div>
+            <div class="muted-sm">Demo: danh sách giả lập.</div>
+          </div>
+        </div>
+
+        <div class="posts" id="posts"></div>
+      </div>
+    </section>
+
+    <!-- TET NAY -->
+    <section id="tetnay" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <a class="btn primary" href="../T%E1%BA%BET%20NAY%20C%C3%93%20G%C3%8C/TETNAYCOGI.HTML">TẾT NAY CÓ GÌ</a>
+          <p class="section-sub">Gợi ý nội dung “xem cùng gia đình” — sạch, gọn, dễ mở rộng.</p>
+        </div>
+
+        <div class="card-grid reveal">
+          <article class="card item">
+            <div class="item-ic">📺</div>
+            <h3>Chương trình gia đình</h3>
+            <p>Táo Quân, live show, nhạc xuân, recap năm cũ.</p>
+            <a class="btn small" href="#tetnay">Xem thêm</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">📖</div>
+            <h3>Cổ tích / chuyện Tết</h3>
+            <p>Truyền thuyết, phong tục, chuyện xưa kể lại.</p>
+            <a class="btn small" href="#tetnay">Xem thêm</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">🎵</div>
+            <h3>Playlist nhạc Tết</h3>
+            <p>Nhạc xuân bất hủ + playlist hiện đại “vibe Tết”.</p>
+            <a class="btn small" href="#tetnay">Xem thêm</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">🎬</div>
+            <h3>Phim Tết / phim gia đình</h3>
+            <p>Gợi ý phim nhẹ nhàng, ấm áp, hợp xem chung.</p>
+            <a class="btn small" href="#tetnay">Xem thêm</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">🍲</div>
+            <h3>Món ngon ngày Tết</h3>
+            <p>Gợi ý món nhanh – đẹp – hợp tụ tập.</p>
+            <a class="btn small" href="#tetnay">Xem thêm</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">🧧</div>
+            <h3>Trò vui truyền thống</h3>
+            <p>Bầu cua, lô tô, đố vui, xin chữ đầu năm.</p>
+            <a class="btn small" href="#tetnay">Xem thêm</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAM NANG -->
+    <section id="camnang" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <a class="btn primary" href="../C%E1%BA%A9m%20Nang/camnang.html">CẨM NANG TẾT</a>
+          <p class="section-sub">Lời chúc cá nhân • tham khảo tử vi • hợp màu • mẹo vặt.</p>
+        </div>
+
+        <div class="card reveal">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="wish" type="button">Lời chúc Tết</button>
+            <button class="tab" data-tab="tuvi" type="button">Tử vi đầu năm</button>
+            <button class="tab" data-tab="mau" type="button">Hợp màu / phong thủy</button>
+            <button class="tab" data-tab="meo" type="button">Mẹo vặt dọn nhà</button>
+            <button class="tab" data-tab="meo" type="button">Tạo thiệp chúc tết</button>
+          </div>
+
+
+    <!-- GAMES -->
+    <section id="games" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2 class="section-title">MINI GAME</h2>
+          <p class="section-sub">UI hub — nút “Chơi” là placeholder link.</p>
+        </div>
+
+        <div class="card-grid reveal">
+          <article class="card item">
+            <div class="item-ic">🔢</div>
+            <h3>Lô tô</h3>
+            <p>Tạo phòng / tham gia (placeholder).</p>
+            <a class="btn small primary" href="#" aria-disabled="true">Chơi</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">🔨</div>
+            <h3>Đập nêu</h3>
+            <p>Vui nhóm bạn (placeholder).</p>
+            <a class="btn small primary" href="#" aria-disabled="true">Chơi</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">🎲</div>
+            <h3>bầu cua</h3>
+            <p>Chơi nhanh (placeholder).</p>
+            <a class="btn small primary" href="#" aria-disabled="true">Chơi</a>
+          </article>
+
+          <article class="card item">
+            <div class="item-ic">♠️</div>
+            <h3>Xì dách</h3>
+            <p>UI demo (placeholder).</p>
+            <a class="btn small primary" href="#" aria-disabled="true">Chơi</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- KET NOI -->
+    <section id="ketnoi" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2 class="section-title">KẾT NỐI</h2>
+          <p class="section-sub">Chat cộng đồng + bạn bè + photobooth nhóm (demo UI).</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card reveal">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Chat cộng đồng</h3>
+                <div class="mini">Demo UI • Realtime sẽ nối Firebase/Socket sau</div>
+              </div>
+              <span class="pill">💬</span>
+            </div>
+
+            <div class="chatbox" id="communityChat"></div>
+            <div class="chatbar">
+              <input id="chatInput" placeholder="Nhập tin nhắn..." />
+              <button class="btn primary small" id="chatSend" type="button">Gửi</button>
+            </div>
+          </div>
+
+        
+
+        <div class="card reveal" style="margin-top:12px;">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Photobooth nhóm (demo)</h3>
+              <div class="mini">Room ID • chọn khung • chọn màu • chụp (mock)</div>
+            </div>
+            <span class="pill">📸</span>
+          </div>
+
+          <div class="photobooth">
+            <div class="pb-left">
+              <div class="row">
+                <label class="field">
+                  <span>Room ID</span>
+                  <input id="pbRoom" placeholder="Ví dụ: RAB12C" />
+                </label>
+                <div class="row">
+                  <button class="btn small" id="pbCreate" type="button">Tạo</button>
+                  <button class="btn small primary" id="pbJoin" type="button">Join</button>
+                </div>
+              </div>
+
+              <div class="row">
+                <label class="field">
+                  <span>Frame</span>
+                  <select id="pbFrame">
+                    <option>Frame 1</option><option>Frame 2</option><option>Frame 3</option>
+                    <option>Frame 4</option><option>Frame 5</option><option>Frame 6</option>
+                  </select>
+                </label>
+
+                <div class="field">
+                  <span>Màu</span>
+                  <div class="chips" id="pbColors">
+                    <button class="chip-btn active" data-color="red" type="button">Đỏ</button>
+                    <button class="chip-btn" data-color="gold" type="button">Vàng</button>
+                    <button class="chip-btn" data-color="pink" type="button">Hồng</button>
+                    <button class="chip-btn" data-color="green" type="button">Xanh</button>
+                    <button class="chip-btn" data-color="rainbow" type="button">Cầu vồng</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <button class="btn primary" id="pbShot" type="button">Chụp</button>
+                <div class="muted-sm">Realtime sẽ nối Firebase/Socket sau.</div>
+              </div>
+            </div>
+
+            <div class="pb-right">
+              <div class="pb-preview" id="pbPreview">
+                <div class="pb-frame" id="pbFrameBox">
+                  <div class="pb-note">Preview khung photobooth (placeholder)</div>
+                </div>
+              </div>
+              <div class="pb-photo" id="pbPhoto" hidden>
+                <div class="placeholder">Ảnh demo đã “chụp” ✨</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div>© 2026 <b>TẾTVERSE</b> – Nhóm 1 12A1.</div>
+        <a class="backtop" href="#top">Lên đầu ↑</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- AUTH MODAL -->
+  <div class="modal" id="authModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-card" role="document">
+      <div class="modal-head">
+        <h3 id="authTitle">Đăng nhập</h3>
+        <button class="iconbtn" id="closeAuth" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab2 active" data-auth="login" type="button">Đăng nhập</button>
+        <button class="tab2" data-auth="register" type="button">Đăng ký</button>
+      </div>
+
+      <div class="modal-body">
+        <label class="field">
+          <span>Email</span>
+          <input id="authEmail" type="email" placeholder="you@example.com" />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input id="authPass" type="password" placeholder="••••••••" />
+        </label>
+
+        <div class="row">
+          <button class="btn primary" id="authSubmit" type="button">Tiếp tục</button>
+          <button class="btn ghost" id="authCancel" type="button">Huỷ</button>
+        </div>
+
+        <div class="hint" id="authHint">Demo localStorage — không có backend.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lbClose" aria-label="Đóng">✕</button>
+    <img id="lbImg" alt="Ảnh phóng to" />
+  </div>
+
+  <!-- DM MODAL (mock) -->
+  <div class="modal" id="dmModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-card" role="document">
+      <div class="modal-head">
+        <h3 id="dmTitle">Chat riêng</h3>
+        <button class="iconbtn" id="closeDm" aria-label="Đóng">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="chatbox" id="dmChat"></div>
+        <div class="chatbar">
+          <input id="dmInput" placeholder="Nhập tin nhắn..." />
+          <button class="btn primary small" id="dmSend" type="button">Gửi</button>
+        </div>
+        <div class="hint">Mock UI • Realtime sẽ nối Socket/Firebase sau.</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
+
+
+
+

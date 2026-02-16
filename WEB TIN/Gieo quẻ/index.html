@@ -1,0 +1,174 @@
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rút Quẻ Tre Tết — Gieo Quẻ Vui Nhộn</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg">
+    <div class="grain"></div>
+    <div class="lanterns">
+      <div class="lantern l1"></div>
+      <div class="lantern l2"></div>
+      <div class="lantern l3"></div>
+    </div>
+    <canvas id="fx"></canvas>
+  </div>
+
+  <main class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">🎋</div>
+        <div>
+          <h1>Rút Quẻ Tre Tết</h1>
+          <p class="sub">Chọn chủ đề → lắc ống quẻ → rút 1 que! 🧧</p>
+        </div>
+      </div>
+
+      <div class="toggles">
+        <button id="toggleSound" class="chip" aria-pressed="true">🔊 Âm thanh: ON</button>
+        <button id="toggleRain" class="chip" aria-pressed="true">🧧 Lì xì rơi: ON</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="layout">
+        <!-- LEFT -->
+        <div class="panel inputs">
+          <h3>🧑‍🎓 Thông tin người gieo</h3>
+
+          <label class="field">
+            <span>Tên của bạn</span>
+            <input id="nameInput" type="text" placeholder="Ví dụ: Minh Anh" maxlength="24" />
+          </label>
+
+          <label class="field">
+            <span>Chủ đề</span>
+            <select id="topicSelect">
+              <option value="family">👨‍👩‍👧‍👦 Gia đình</option>
+              <option value="friends">🧑‍🤝‍🧑 Bạn bè</option>
+              <option value="study" selected>📚 Học tập</option>
+              <option value="career">💼 Sự nghiệp</option>
+              <option value="love">💘 Tình duyên</option>
+              <option value="money">💰 Tài lộc</option>
+              <option value="health">🧘 Sức khỏe</option>
+              <option value="luck">🍀 Vận may</option>
+              <option value="other">✍️ Khác (tự nhập câu hỏi)</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Câu hỏi gieo quẻ</span>
+            <textarea id="qInput" rows="4"
+              placeholder="Chỉ mục 'Khác' mới tự nhập câu hỏi…"></textarea>
+          </label>
+
+          <div class="row">
+            <button id="btnShake" class="btn primary">
+              <span class="btnIcon">🪵</span>
+              <span>Lắc Ống Quẻ</span>
+            </button>
+            <button id="btnDraw" class="btn" disabled>🎋 Rút Que</button>
+          </div>
+
+          <div class="hint">
+            Tip: Với các chủ đề sẵn có, hệ thống sẽ tự tạo câu hỏi ngẫu nhiên khi bạn bấm “Lắc Ống Quẻ”.
+            Chỉ “Khác” mới cho bạn tự nhập.
+          </div>
+
+          <div class="ratio">
+            <div class="bar">
+              <div class="good">70% Tốt</div>
+              <div class="neutral">20% Trung tính</div>
+              <div class="danger">10% Nguy hiểm</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER -->
+        <div class="panel stage">
+          <h3>🎍 Ống Quẻ Tre</h3>
+
+          <div class="bambooWrap">
+            <div id="bamboo" class="bamboo" aria-label="Ống quẻ">
+              <div class="bambooTop"></div>
+
+              <div class="bambooBody" id="bambooBody">
+                <div class="bambooRings"></div>
+
+                <div class="sticks">
+                  <div class="stick s1"></div>
+                  <div class="stick s2"></div>
+                  <div class="stick s3"></div>
+                  <div class="stick s4"></div>
+                  <div class="stick s5"></div>
+                </div>
+
+                <div id="pickedStick" class="pickedStick" aria-hidden="true">
+                  <div class="stickMark" id="stickMark">Q-00</div>
+                </div>
+
+                <div class="bambooLabel">ỐNG QUẺ</div>
+                <div class="bambooSub">Lắc rồi rút 1 que</div>
+              </div>
+
+              <div class="spark sp1"></div>
+              <div class="spark sp2"></div>
+              <div class="spark sp3"></div>
+            </div>
+          </div>
+
+          <div class="stageNote" id="stageNote">Nhập tên, chọn chủ đề rồi nhấn <b>Lắc Ống Quẻ</b> nhé!</div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel result">
+          <h3>📜 Kết quả quẻ</h3>
+
+          <div class="seal">
+            <span class="sealIcon">🏮</span>
+            <span class="sealText" id="sealText">Chưa rút</span>
+          </div>
+
+          <div class="fortuneBox">
+            <div class="title" id="fTitle">Chưa có quẻ…</div>
+            <div class="desc" id="fDesc">Rút que để nhận lời giải đáp “có muối nhưng có tâm” ✨</div>
+
+            <div class="meta">
+              <span class="badge" id="fType">#tet</span>
+              <span class="badge luck" id="fLuck">🍀 Lộc: —</span>
+            </div>
+
+            <div class="row">
+              <button id="btnCopy" class="btn" disabled>📋 Copy</button>
+              <button id="btnAgain" class="btn" disabled>🔁 Gieo lại</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 style="margin-top:10px;">🧾 Lịch sử</h3>
+          <ul id="history" class="history"></ul>
+
+          <div class="row" style="justify-content:flex-end;">
+            <button id="btnClear" class="btn small">🧹 Xoá lịch sử</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>🎆 Chúc mừng năm mới!</span>
+      <span class="dot">•</span>
+      <span>Rút quẻ chỉ để vui — nhưng vui đúng cách thì… cũng hên hơn 😄</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

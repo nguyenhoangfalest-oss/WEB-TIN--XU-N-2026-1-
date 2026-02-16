@@ -1,0 +1,623 @@
+
+
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cẩm Nang Tết 2026 • Xuân 12A1</title>
+
+  <style>
+    :root{
+      --bg:#fff7f8;
+      --card:#ffffff;
+      --text:#1b1b1b;
+      --muted:#6b6b6b;
+      --red:#c2182b;
+      --red2:#ff3b7a;
+      --gold:#ffd700;
+      --shadow: 0 14px 35px rgba(0,0,0,.10);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Times New Roman", serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,59,122,.12), transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(194,24,43,.10), transparent 45%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    .wrap{ max-width:980px; margin:auto; padding:56px 18px 70px; position:relative; z-index:2; }
+    .hero{ text-align:center; margin-bottom:18px; }
+    .hero-badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 14px; border-radius:999px;
+      background:rgba(194,24,43,.10); color:var(--red);
+      font-weight:700; margin-bottom:10px;
+    }
+    h1{ font-size:44px; margin:6px 0 8px; letter-spacing:.2px; }
+    .sub{ margin:0 0 18px; color:var(--muted); font-size:18px; }
+
+    .tabs{
+      position:relative;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      padding-bottom:12px;
+    }
+    .tab{
+      padding:12px 18px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.06);
+      cursor:pointer;
+      font-weight:900;
+      background:#f1efee;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease, color .16s ease;
+      user-select:none;
+    }
+    .tab:hover{ transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.10); }
+    .tab.active{
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color:white;
+      border-color: transparent;
+      box-shadow: 0 12px 26px rgba(194,24,43,.22);
+    }
+    .tab-underline{
+      position:absolute; height:4px; border-radius:999px;
+      background: linear-gradient(135deg, var(--gold), #fff1a8);
+      bottom:0; left:0; width:120px;
+      transform: translateX(0);
+      transition: transform .25s ease, width .25s ease;
+      opacity:.85;
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:22px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .content h2{ margin:4px 0 10px; font-size:26px; }
+    .content p{ color:var(--muted); margin-top:0; }
+    ul{ padding-left:18px; margin:10px 0 0; }
+    li{ margin:10px 0; font-size:18px; line-height:1.35; }
+
+    /* animation chuyển tab */
+    .anim-enter{ animation: enter .26s ease both; }
+    @keyframes enter{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    @media (max-width:860px){ .grid2{ grid-template-columns:1fr; } }
+
+    .field label{ display:block; font-weight:900; color:#333; margin:12px 0 8px; }
+    .field input, .field textarea, .field select{
+      width:100%; padding:12px 14px;
+      border-radius:14px; border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      font-family:"Times New Roman", serif;
+      font-size:18px; outline:none;
+    }
+    .field textarea{ min-height:110px; resize:vertical; }
+
+    .row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+    .btn{
+      border:none; border-radius:14px; padding:12px 16px;
+      font-weight:900; cursor:pointer; font-size:18px;
+      font-family:"Times New Roman", serif;
+      transition: transform .14s ease, box-shadow .14s ease, outline-color .14s ease;
+      outline:2px solid transparent; outline-offset:3px;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 12px 26px rgba(0,0,0,.12);
+      outline-color: rgba(255,215,0,.7);
+    }
+    .btn.primary{ background: linear-gradient(135deg, var(--red), var(--red2)); color:white; }
+    .btn.light{ background:#f1efee; }
+    .note{ margin-top:10px; color:var(--muted); }
+
+    canvas{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      margin-top:10px;
+    }
+
+    /* Petal falling */
+    .petal-layer{
+      position:fixed; inset:0;
+      pointer-events:none; overflow:hidden;
+      z-index:0;
+    }
+    .petal{
+      position:absolute;
+      top:-40px;
+      font-size:18px;
+      opacity:.55;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.10));
+      animation: fall linear infinite;
+      will-change: transform;
+    }
+    @keyframes fall{
+      from{ transform: translate3d(var(--x,0px), -60px, 0) rotate(0deg); }
+      to{ transform: translate3d(calc(var(--x,0px) + var(--drift,120px)), calc(100vh + 120px), 0) rotate(var(--rot,540deg)); }
+    }
+    /* Đổi font cho tất cả button (tab + nút) */
+button, .tab, .btn{
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 20px;          /* muốn to/nhỏ thì chỉnh */
+  font-weight: 900;         /* đậm hơn */
+  letter-spacing: .2px;
+}
+  </style>
+</head>
+
+<body>
+  <div id="petalLayer" class="petal-layer" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="hero-badge">🌸 Xuân 12A1</div>
+      <h1>📖 Cẩm Nang Tết</h1>
+      <p class="sub">Mọi thứ bạn cần cho một cái Tết trọn vẹn</p>
+
+      <nav class="tabs" aria-label="Cẩm nang tabs">
+        <button class="tab active" data-tab="loichuc" type="button">✨ Lời chúc</button>
+        <button class="tab" data-tab="tuvi" type="button">🔮 Tử vi</button>
+        <button class="tab" data-tab="mauhop" type="button">🎨 Màu hợp</button>
+        <button class="tab" data-tab="meodon" type="button">🧹 Mẹo dọn nhà</button>
+        <button class="tab" data-tab="thiep" type="button">🎴 Thiệp Tết</button>
+        <span class="tab-underline" id="tabUnderline" aria-hidden="true"></span>
+      </nav>
+    </header>
+
+    <section class="card">
+      <div id="content" class="content anim-enter"></div>
+    </section>
+  </main>
+<div class="tabpanes">
+            <div class="pane active" id="pane-wish">
+              <div class="grid-2">
+                <div class="panel">
+                  <div class="kicker">Tạo lời chúc</div>
+                  <div class="row">
+                    <label class="field">
+                      <span>Đối tượng</span>
+                      <select id="wishTarget">
+                        <option value="giadinh">Gia đình</option>
+                        <option value="banbe">Bạn bè</option>
+                        <option value="thayco">Thầy cô</option>
+                      </select>
+                    </label>
+
+                    <label class="field">
+                      <span>Tên (tuỳ chọn)</span>
+                      <input id="wishName" type="text" placeholder="Ví dụ: Lan" />
+                    </label>
+                  </div>
+
+                  <button class="btn primary" id="genWish" type="button">Generate</button>
+                  <div class="wish-out" id="wishOut">Nhấn Generate để tạo lời chúc ✨</div>
+                </div>
+
+                <div class="panel">
+                  <div class="kicker">Gợi ý nhanh</div>
+                  <ul class="bullets">
+                    <li>Ngắn gọn, ấm áp, dễ gửi.</li>
+                    <li>Ưu tiên sức khoẻ, bình an, may mắn.</li>
+                    <li>Sĩ tử: tự tin, bền bỉ, vững vàng.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+  <script>
+    // ===== DATA (nhúng luôn để khỏi import) =====
+ 
+    const LOI_CHUC = [
+      "💌 Chúc gia đình năm mới bình an, sức khỏe dồi dào, vạn sự hanh thông.",
+      "🌸 Chúc bạn bè năm mới thật nhiều niềm vui, học tập và công việc đều thuận lợi.",
+      "🎓 Chúc thầy cô năm mới an khang, hạnh phúc, luôn tràn đầy nhiệt huyết.",
+      "🧧 Chúc năm mới phát tài phát lộc, mọi dự định đều suôn sẻ.",
+      "✨ Chúc bạn một mùa Tết ấm áp, đoàn viên và nhiều điều may mắn."
+    ];
+
+    const MAU_HOP = [
+      "🔴 Đỏ – Tài lộc, may mắn",
+      "🟡 Vàng – Quyền lực, thịnh vượng",
+      "🟢 Xanh lá – Sức khỏe, bình an",
+      "🔵 Xanh dương – Trí tuệ, học tập",
+      "🩷 Hồng – Tình duyên, hạnh phúc"
+    ];
+
+    const MEO_DON = [
+      "📦 Dọn từ trên xuống dưới, từ trong ra ngoài",
+      "🧴 Dùng giấm + baking soda tẩy vết bẩn cứng đầu",
+      "🪴 Đặt cây xanh để không khí trong lành",
+      "🍊 Bày mâm ngũ quả đúng cách theo vùng miền",
+      "✨ Lau kính bằng giấy báo cũ cho sáng bóng"
+    ];
+
+    const ZODIAC_MAP = {
+      "Tý":"Chuột","Sửu":"Trâu","Dần":"Hổ","Mão":"Mèo",
+      "Thìn":"Rồng","Tỵ":"Rắn","Ngọ":"Ngựa","Mùi":"Dê",
+      "Thân":"Khỉ","Dậu":"Gà","Tuất":"Chó","Hợi":"Heo"
+    };
+
+    const TU_VI_2026 = {
+      "Tý":"Giữ nhịp ổn định, cẩn trọng chi tiêu đầu năm. Hợp học kỹ năng mới, tránh ôm đồm.",
+      "Sửu":"Công việc tiến chậm mà chắc. Chú ý sức khỏe – ngủ đủ. Hợp tích lũy, không liều.",
+      "Dần":"Quý nhân nâng đỡ, dễ thăng tiến. Nên chủ động nắm cơ hội, đừng sợ thử thách.",
+      "Mão":"Tình cảm khởi sắc, giao tiếp thuận. Tài chính cân bằng, nên lập kế hoạch rõ ràng.",
+      "Thìn":"Năm có cơ hội lớn. Nếu dám làm – dám chịu, kết quả tốt. Tránh “đánh nhanh thắng nhanh”.",
+      "Tỵ":"Vượng vận sáng tạo. Hợp mở rộng dự án/thi cử. Tránh thức khuya, giữ tinh thần ổn định.",
+      "Ngọ":"Năm tuổi rực rỡ nhưng dễ bốc đồng. Kiểm soát cảm xúc là chìa khóa để thắng lớn.",
+      "Mùi":"Gia đạo êm, bạn bè hỗ trợ. Sự nghiệp tiến đều. Hợp tích lũy thành tích từng bước.",
+      "Thân":"Dễ dính tranh cãi vì hiểu lầm. Tập trung học tập/kỹ năng. Bình tĩnh là thắng.",
+      "Dậu":"Tài lộc khá. Hợp tiết kiệm thông minh. Tận dụng mạng lưới quan hệ.",
+      "Tuất":"Cơ hội hợp tác mới. Hợp làm nhóm/dự án. Tránh trì hoãn – hãy làm theo kế hoạch.",
+      "Hợi":"Năm bình ổn. Không nên mạo hiểm tài chính. Chăm sức khỏe và củng cố nền tảng."
+    };
+
+    // ===== TAB LOGIC =====
+    const tabs = [...document.querySelectorAll(".tab")];
+    const content = document.getElementById("content");
+    const underline = document.getElementById("tabUnderline");
+
+    function moveUnderline(btn){
+      const r = btn.getBoundingClientRect();
+      const pr = btn.parentElement.getBoundingClientRect();
+      const w = r.width * 0.65;
+      underline.style.width = `${w}px`;
+      underline.style.transform = `translateX(${(r.left - pr.left) + (r.width - w)/2}px)`;
+    }
+
+    window.addEventListener("resize", () => {
+      const active = document.querySelector(".tab.active");
+      if(active) moveUnderline(active);
+    });
+
+    function animateContent(){
+      content.classList.remove("anim-enter");
+      void content.offsetWidth;
+      content.classList.add("anim-enter");
+    }
+
+    function renderList(title, desc, arr){
+      content.innerHTML = `
+        <h2>${title}</h2>
+        <p>${desc}</p>
+        <ul>${arr.map(x=>`<li>${x}</li>`).join("")}</ul>
+      `;
+      animateContent();
+    }
+
+    const ZODIACS = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+    function zodiacFromYear(year){
+      const idx = (year - 2008) % 12; // 2008 = Tý
+      return ZODIACS[(idx + 12) % 12];
+    }
+
+    function renderTuvi(){
+      content.innerHTML = `
+        <h2>🔮 Tử vi theo ngày sinh (2026 – Bính Ngọ)</h2>
+        <p><b>Chọn ngày sinh → tự nhận con giáp và gợi ý vận trình 2026.</b></p>
+
+        <div class="grid2">
+          <div class="field">
+            <label>📅 Ngày sinh</label>
+            <input id="dob" type="date" />
+            <div class="row">
+              <button class="btn primary" id="btnCheckTuvi" type="button">Xem tử vi</button>
+              <button class="btn light" id="btnRandomDob" type="button">Random</button>
+            </div>
+            
+          </div>
+
+          <div class="field">
+            <label>📌 Kết quả</label>
+            <div id="tuviOut" style="padding:12px 14px; border-radius:14px; border:1px solid rgba(0,0,0,.10); background:#fff;">
+              Hãy nhập ngày sinh rồi bấm <b>Xem tử vi</b>.
+            </div>
+          </div>
+        </div>
+      `;
+      animateContent();
+
+      const dob = document.getElementById("dob");
+      const out = document.getElementById("tuviOut");
+
+      document.getElementById("btnRandomDob").addEventListener("click", () => {
+        const year = 1998 + Math.floor(Math.random()*20);
+        const month = 1 + Math.floor(Math.random()*12);
+        const day = 1 + Math.floor(Math.random()*28);
+        dob.value = `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+      });
+
+      document.getElementById("btnCheckTuvi").addEventListener("click", () => {
+        if(!dob.value){
+          out.innerHTML = `<b style="color:#c2182b">Bạn chưa chọn ngày sinh.</b>`;
+          return;
+        }
+        const d = new Date(dob.value);
+        const year = d.getFullYear();
+        const zodiac = zodiacFromYear(year);
+        const info = TU_VI_2026[zodiac] || "Năm 2026 bình ổn, giữ sức khỏe và tinh thần tích cực.";
+
+        out.innerHTML = `
+          <div><b>🎯 Con giáp:</b> <span style="color:#c2182b; font-weight:900">${zodiac}</span> (${ZODIAC_MAP[zodiac] || ""})</div>
+          <div style="margin-top:8px"><b>📌 Gợi ý 2026:</b> ${info}</div>
+          <div style="margin-top:8px; color:#6b6b6b"><b>Năm sinh:</b> ${year}</div>
+        `;
+      });
+    }
+
+    // ===== THIỆP PNG (Canvas) =====
+    function roundRect(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.arcTo(x+w, y, x+w, y+h, r);
+      ctx.arcTo(x+w, y+h, x, y+h, r);
+      ctx.arcTo(x, y+h, x, y, r);
+      ctx.arcTo(x, y, x+w, y, r);
+      ctx.closePath();
+    }
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+      const words = text.split(" ");
+      let line = "";
+      let yy = y;
+      for(let i=0;i<words.length;i++){
+        const testLine = line + words[i] + " ";
+        const metrics = ctx.measureText(testLine);
+        if(metrics.width > maxWidth && i>0){
+          ctx.fillText(line.trim(), x, yy);
+          line = words[i] + " ";
+          yy += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim(), x, yy);
+    }
+
+    function renderThiep(){
+      content.innerHTML = `
+        <h2>🎴 Tạo thiệp Tết cá nhân </h2>
+        <p><b>Nhập thông tin</b> → <b>Tạo thiệp</b> → <b>Tải thiệp</b>.</p>
+
+        <div class="grid2">
+          <div class="field">
+            <label>👤 Tên người nhận</label>
+            <input id="cardName" placeholder="VD: Nguyễn Văn A" />
+
+            <label>💌 Lời chúc</label>
+            <select id="cardWish">
+              ${LOI_CHUC.map((x,i)=>`<option value="${i}">${x.replace(/^.+?\s/, "")}</option>`).join("")}
+            </select>
+
+            <label>📝 Ghi thêm</label>
+            <textarea id="cardExtra" placeholder="VD: Chúc bạn thi tốt, đậu NV1 nha!"></textarea>
+
+            <label>🎨 Tone</label>
+            <select id="cardTone">
+              <option value="do-vang">Đỏ – Vàng (Tết)</option>
+              <option value="do-hong">Đỏ – Hồng</option>
+              <option value="vang-kem">Vàng kem</option>
+            </select>
+
+            <div class="row">
+              <button class="btn primary" id="btnMakeCard" type="button">Tạo thiệp</button>
+              <button class="btn light" id="btnDownloadPng" type="button">Tải thiệp</button>
+            </div>
+                </div>
+             
+            <div>
+            <canvas id="cardCanvas" width="1200" height="675"></canvas>
+          </div>
+        </div>
+      `;
+      animateContent();
+
+      const canvas = document.getElementById("cardCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function drawCard(){
+        const name = (document.getElementById("cardName").value || "Bạn").trim();
+        const wishIndex = +document.getElementById("cardWish").value;
+        const wish = LOI_CHUC[wishIndex] || LOI_CHUC[0];
+        const extra = (document.getElementById("cardExtra").value || "").trim();
+        const tone = document.getElementById("cardTone").value;
+
+        let g;
+        if(tone==="do-vang"){
+          g = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+          g.addColorStop(0,"#8b0000"); g.addColorStop(.6,"#c2182b"); g.addColorStop(1,"#ff3b7a");
+        }else if(tone==="do-hong"){
+          g = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+          g.addColorStop(0,"#b0002a"); g.addColorStop(1,"#ff6fa3");
+        }else{
+          g = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+          g.addColorStop(0,"#fff2cc"); g.addColorStop(1,"#ffe7ea");
+        }
+        ctx.fillStyle = g;
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+
+        // border
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "rgba(255,215,0,.85)";
+        roundRect(ctx, 40, 40, canvas.width-80, canvas.height-80, 38);
+        ctx.stroke();
+
+        // title
+        ctx.textAlign = "center";
+        ctx.fillStyle = "rgba(255,215,0,.95)";
+        ctx.font = "bold 60px 'Times New Roman'";
+        ctx.fillText("CHÚC MỪNG NĂM MỚI 2026", canvas.width/2, 150);
+
+        // name
+        ctx.fillStyle = tone==="vang-kem" ? "#8b0000" : "#fff7d1";
+        ctx.font = "bold 64px 'Times New Roman'";
+        ctx.fillText(`Gửi ${name}`, canvas.width/2, 255);
+
+        // wish
+        ctx.fillStyle = tone==="vang-kem" ? "#7a0000" : "rgba(255,255,255,.95)";
+        ctx.font = "bold 42px 'Times New Roman'";
+        wrapText(ctx, wish, canvas.width/2, 340, 920, 54);
+
+        // extra
+        if(extra){
+          ctx.fillStyle = tone==="vang-kem" ? "rgba(70,0,0,.85)" : "rgba(255,255,255,.9)";
+          ctx.font = "italic 34px 'Times New Roman'";
+          wrapText(ctx, extra, canvas.width/2, 470, 900, 46);
+        }
+
+        // footer
+        ctx.fillStyle = tone==="vang-kem" ? "rgba(90,0,0,.75)" : "rgba(255,255,255,.75)";
+        ctx.font = "28px 'Times New Roman'";
+        ctx.fillText("🌸 Xuân 12A1 • Tết Bính Ngọ 2026 🌸", canvas.width/2, 610);
+      }
+
+      document.getElementById("btnMakeCard").addEventListener("click", drawCard);
+      document.getElementById("btnDownloadPng").addEventListener("click", () => {
+        drawCard();
+        const a = document.createElement("a");
+        a.href = canvas.toDataURL("image/png");
+        a.download = "thiep-xuan-12a1.png";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+
+      drawCard();
+    }
+
+    function render(tabKey){
+      if(tabKey==="loichuc") return renderList("💌 Lời chúc Tết 2026", "<b>Chọn một lời chúc để gửi người thân, bạn bè.</b>", LOI_CHUC);
+      if(tabKey==="tuvi") return renderTuvi();
+      if(tabKey==="mauhop") return renderList("🎨 Màu sắc may mắn năm 2026", "<b>Gợi ý màu hợp để trang trí, chọn outfit, lì xì.</b>", MAU_HOP);
+      if(tabKey==="meodon") return renderList("🧹 Mẹo dọn nhà đón Tết", "<b>Mẹo nhanh gọn – sạch sẽ – đỡ mệt.</b>", MEO_DON);
+      if(tabKey==="thiep") return renderThiep();
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        tabs.forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        moveUnderline(btn);
+        render(btn.dataset.tab);
+      });
+    });
+
+    // ===== PETALS =====
+    const petalLayer = document.getElementById("petalLayer");
+    function spawnPetal(){
+      const el = document.createElement("div");
+      el.className = "petal";
+      el.textContent = Math.random() < 0.75 ? "🌸" : "💮";
+      const left = Math.random()*100;
+      const dur = 6 + Math.random()*6;
+      const drift = (Math.random()*220 - 110);
+      const rot = (300 + Math.random()*540);
+      el.style.left = `${left}vw`;
+      el.style.animationDuration = `${dur}s`;
+      el.style.setProperty("--x", "0px");
+      el.style.setProperty("--drift", `${drift}px`);
+      el.style.setProperty("--rot", `${rot}deg`);
+      petalLayer.appendChild(el);
+      setTimeout(()=>el.remove(), (dur+1)*1000);
+    }
+    setInterval(spawnPetal, 180);
+
+    // init
+    const active = document.querySelector(".tab.active");
+    moveUnderline(active);
+    render("loichuc");
+  </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

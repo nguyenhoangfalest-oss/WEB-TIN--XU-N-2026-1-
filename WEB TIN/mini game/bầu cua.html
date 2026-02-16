@@ -1,0 +1,137 @@
+﻿
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Bầu Cua - trò chơi dân gian Việt Nam." />
+  <meta name="theme-color" content="#a80f14" />
+  <meta property="og:title" content="Bầu Cua" />
+  <meta property="og:description" content="Bầu Cua - trò chơi dân gian Việt Nam." />
+  <meta property="og:image" content="bau.png" />
+  <meta property="og:type" content="website" />
+  <title>Bầu Cua</title>
+  <link rel="icon" type="image/png" href="bau.png" />
+  <link rel="apple-touch-icon" href="bau.png" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="left">
+        <div class="logo">BC</div>
+        <div>
+          <h1>BẦU CUA</h1>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="controls" role="group" aria-label="Tuỳ chọn Tết">
+          <button id="toggleEffects" class="btn ghost toggle" aria-pressed="true" aria-label="Tắt hiệu ứng Tết">Hiệu ứng: Bật</button>
+          <button id="toggleMusic" class="btn ghost toggle" aria-pressed="false" aria-label="Bật nhạc Tết">Nhạc: Tắt</button>
+        </div>
+        <div class="wallet">
+          <span id="balance" class="balance">1.000.000</span>
+        </div>
+        <button id="resetAll" class="btn ghost" aria-label="Reset" title="Reset">Reset</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- LEFT: Big animal board -->
+      <section class="panel board">
+        <div class="panelHead">
+          <h2>Bàn chơi</h2>
+        </div>
+
+        <div id="animalBoard" class="animalBoard"></div>
+
+        <div class="diceZone">
+          <div class="diceWrap" id="diceWrap">
+            <div class="die"><div class="dieFace" id="d1">?</div></div>
+            <div class="die"><div class="dieFace" id="d2">?</div></div>
+            <div class="die"><div class="dieFace" id="d3">?</div></div>
+          </div>
+
+          <button id="rollBtn" class="btn primary">LẮC</button>
+
+          <div class="statusLine">
+            <span id="status" class="status">Chọn con để cược</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Betting panel -->
+      <aside class="panel betPanel">
+        <div class="panelHead">
+          <h2>Cược</h2>
+        </div>
+
+        <div class="betBox">
+          <div class="row">
+            <span id="selectedAnimal" class="selected">Chưa chọn</span>
+          </div>
+
+          <div class="betInputWrap">
+            <label class="betLabel" for="betInput">Nhập cược (đ)</label>
+            <div class="betInputRow">
+              <button id="betMinus" class="stepBtn" type="button" aria-label="Giảm 1000">−</button>
+              <input id="betInput" class="betInput" type="number" inputmode="numeric" min="0" step="1000" placeholder="1000" />
+              <button id="betPlus" class="stepBtn" type="button" aria-label="Tăng 1000">+</button>
+              <div class="betPreview">
+                <span id="selectedBet">0</span> đ
+              </div>
+            </div>
+          </div>
+
+          <div class="summary">
+            <div class="sumRow">
+              <span>Tổng cược:</span>
+              <b>
+                <span id="totalBet">0</span> đ
+              </b>
+            </div>
+            <div class="sumRow">
+              <span>Lãi/Lỗ:</span>
+              <b id="lastDelta">
+                0
+              </b>
+            </div>
+          </div>
+
+          <div class="betListWrap">
+            <div class="betListTitle">Đang cược</div>
+            <div id="betList" class="betList"></div>
+          </div>
+
+          <div class="actions">
+            <button id="clearBets" class="btn ghost">Xoá</button>
+            <button id="betQuick" class="btn ghost">Nhanh</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="tetEffects" class="tetEffects" aria-hidden="true"></div>
+
+  <div id="resultPopup" class="popup" aria-hidden="true">
+    <div id="popupBackdrop" class="popupBackdrop"></div>
+    <div class="popupCard" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+      <div id="popupTitle" class="popupTitle">Kết quả</div>
+      <div id="popupResults" class="popupResults"></div>
+      <div id="popupMessage" class="popupMessage"></div>
+      <div id="popupAmount" class="popupAmount">0</div>
+      <div class="popupActions">
+        <button id="popupAgain" class="btn primary">Lắc tiếp</button>
+        <button id="popupClose" class="btn ghost">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../app.js"></script>
+</body>
+</html>
+
+
